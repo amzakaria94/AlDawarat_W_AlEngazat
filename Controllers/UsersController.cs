@@ -216,6 +216,11 @@ namespace AlDawarat_W_AlEngazat.Controllers
 			return View(user);
 		}
 
+		public IActionResult Search()
+		{
+			return View();
+		}
+
 		// POST: Users/Delete/5
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
