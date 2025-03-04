@@ -1,0 +1,42 @@
+﻿@{
+	ViewData["Title"] = "Home";
+}
+
+<div class="text-center">
+	<h1 class="display-4">اهلا بكم في </h1>
+	<h2 class="display-3">الدورات والمنجزات</h2>
+	<p class="lead">تطبيق مخصص للتعامل وتنظيم العملاء والمستخدمين</p>
+	<hr class="my-4">
+	<p>أبدأ بتنظيم الموظفين لديك او استكشف المزيد من الخدمات لدينا</p>
+	<a class="btn btn-primary btn-lg" asp-controller="Users" asp-action="Index" role="button">Manage Users</a>
+</div>
+
+<div class="row mt-5">
+	<div class="col-md-4">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">تنظيم المستتخدمين</h5>
+				<p class="card-text">اضافه, تعديل, حذف او تعديل بيانات المستخدمين</p>
+				<a asp-controller="Users" asp-action="Index" class="btn btn-outline-primary">ابدأ الآن</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">الفئات</h5>
+				<p class="card-text">تنظيم الفئات الموجوده بالنظام</p>
+				<a href="#" class="btn btn-outline-primary">قريبآ</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">Reports</h5>
+				<p class="card-text">تقديم التقارير وتحليل بيانات العملاء </p>
+				<a href="#" class="btn btn-outline-primary">قريبآ</a>
+			</div>
+		</div>
+	</div>
+</div>

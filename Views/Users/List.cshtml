@@ -1,0 +1,60 @@
+﻿@model IEnumerable<AlDawarat_W_AlEngazat.Models.Entities.User>
+
+@{
+	ViewData["Title"] = "All Users";
+}
+
+<h1>All Users</h1>
+<p>
+</p>
+
+<!-- Users Table -->
+<table class="table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Number</th>
+			<th>Category</th>
+			<th>Department</th>
+			<th>Position</th>
+			<th>Certificate</th>
+			<th>Achievements</th>
+			<th><a class="btn btn-outline-primary" asp-action="Create">Create New</a></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var user in Model)
+		{
+			<tr>
+				<td>@user.Name</td>
+				<td>@user.NationalID</td>
+				<td>@user.Category</td>
+				<td>@user.Department</td>
+				<td>@user.Position</td>
+				<td>@user.Certificate</td>
+				<td>
+					@if (user.Achievements != null && user.Achievements.Any())
+					{
+						<ul>
+							@foreach (var achievement in user.Achievements)
+							{
+								<li>@achievement.Title (@achievement.StartDate.ToShortDateString() - @achievement.EndDate.ToShortDateString())</li>
+							}
+						</ul>
+					} else
+					{
+						<span>No achievements</span>
+					}
+				</td>
+				<td>
+					<a asp-action="Edit" asp-route-id="@user.ID">Edit</a> |
+					<a asp-action="Details" asp-route-id="@user.ID">Details</a> |
+					<a asp-action="Delete" asp-route-id="@user.ID">Delete</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<!-- Back to Index Button -->
+<a asp-action="Index" class="btn btn-secondary">Back to Home</a>
