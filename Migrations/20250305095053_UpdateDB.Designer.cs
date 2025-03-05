@@ -4,6 +4,7 @@ using AlDawarat_W_AlEngazat.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AlDawarat_W_AlEngazat.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250305095053_UpdateDB")]
+    partial class UpdateDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,7 +92,7 @@ namespace AlDawarat_W_AlEngazat.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CourseID")
+                    b.Property<int>("CourseID")
                         .HasColumnType("int");
 
                     b.Property<string>("Department")
@@ -123,7 +126,9 @@ namespace AlDawarat_W_AlEngazat.Migrations
                 {
                     b.HasOne("AlDawarat_W_AlEngazat.Models.Entities.Course", "Courses")
                         .WithMany("Employees")
-                        .HasForeignKey("CourseID");
+                        .HasForeignKey("CourseID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Courses");
                 });

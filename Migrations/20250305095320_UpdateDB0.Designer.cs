@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AlDawarat_W_AlEngazat.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250302040220_init")]
-    partial class init
+    [Migration("20250305095320_UpdateDB0")]
+    partial class UpdateDB0
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,8 +33,9 @@ namespace AlDawarat_W_AlEngazat.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -43,17 +44,39 @@ namespace AlDawarat_W_AlEngazat.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
                     b.HasKey("ID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("Achievements");
                 });
 
-            modelBuilder.Entity("AlDawarat_W_AlEngazat.Models.Entities.User", b =>
+            modelBuilder.Entity("AlDawarat_W_AlEngazat.Models.Entities.Course", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("AlDawarat_W_AlEngazat.Models.Entities.Employee", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -69,6 +92,9 @@ namespace AlDawarat_W_AlEngazat.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CourseID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Department")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -77,7 +103,7 @@ namespace AlDawarat_W_AlEngazat.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NationalID")
+                    b.Property<string>("Number")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -85,25 +111,29 @@ namespace AlDawarat_W_AlEngazat.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Rank")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ID");
 
-                    b.ToTable("Users");
+                    b.HasIndex("CourseID");
+
+                    b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("AlDawarat_W_AlEngazat.Models.Entities.Achievement", b =>
+            modelBuilder.Entity("AlDawarat_W_AlEngazat.Models.Entities.Employee", b =>
                 {
-                    b.HasOne("AlDawarat_W_AlEngazat.Models.Entities.User", "User")
-                        .WithMany("Achievements")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("AlDawarat_W_AlEngazat.Models.Entities.Course", "Courses")
+                        .WithMany("Employees")
+                        .HasForeignKey("CourseID");
 
-                    b.Navigation("User");
+                    b.Navigation("Courses");
                 });
 
-            modelBuilder.Entity("AlDawarat_W_AlEngazat.Models.Entities.User", b =>
+            modelBuilder.Entity("AlDawarat_W_AlEngazat.Models.Entities.Course", b =>
                 {
-                    b.Navigation("Achievements");
+                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }

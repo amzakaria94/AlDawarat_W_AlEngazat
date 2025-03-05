@@ -1,0 +1,35 @@
+﻿@model AlDawarat_W_AlEngazat.Models.Entities.Achievement
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Achievement</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">اسم المنجز
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            تاريخ الحصول علي المنجز
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class = "col-sm-2">
+            وصف المنجز
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.ID">تعديل</a> |
+    <a asp-action="Index">العوده</a>
+</div>

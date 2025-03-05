@@ -1,0 +1,47 @@
+﻿@model IEnumerable<AlDawarat_W_AlEngazat.Models.Entities.Achievement>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>المنجزات</h1>
+
+<p>
+    
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                اسم المنجز
+            </th>
+            <th>
+               تاريخ الحصول علي المنجز 
+            </th>
+            <th>
+                وصف المنجز
+            </th>
+			<th><a class="btn btn-outline-primary" asp-action="Create">اضافة منجز جديد</a></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">تعديل</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">تفاصيل</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">حذف</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

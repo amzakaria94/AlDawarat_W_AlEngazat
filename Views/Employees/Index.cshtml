@@ -1,0 +1,74 @@
+﻿@model IEnumerable<AlDawarat_W_AlEngazat.Models.Entities.Employee>
+
+@{
+   ViewData["Title"] = "Index";
+}
+
+<h3>عرض جميع الموظفين</h3>
+
+<p>
+    عدد الموظفين: @Model.Count()
+</p>
+<table class="table">
+   <thead>
+       <tr>
+           <th>
+               الاسم
+           </th>
+           <th>
+              الرتبه
+           </th>
+           <th>الرقم</th>
+           <th>
+               الفئه
+           </th>
+           <th>القسم</th>
+           <th>التخصص</th>
+           <th>المؤهل</th>
+           <th>الدورات "اذا وجد"</th>
+           <th><a asp-action="Create" class="btn btn-outline-success">انشاء موظف جديد</a></th>
+       </tr>
+   </thead>
+   <tbody>
+@foreach (var item in Model) {
+       <tr>
+           <td>
+               @Html.DisplayFor(modelItem => item.Name)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Rank)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Number)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Category)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Department)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Position)
+           </td>
+           <td>
+               @Html.DisplayFor(modelItem => item.Certificate)
+           </td>
+           <td>
+               @if (item.Courses == null )
+               {
+                   <span>متاح</span>
+               }
+               else
+               {
+                   @Html.DisplayFor(modelItem => item.Courses.Name)
+               }
+           </td>
+           <td>
+               <a asp-action="Edit" asp-route-id="@item.ID">تعديل</a> |
+               <a asp-action="Details" asp-route-id="@item.ID">تفاصيل</a> |
+               <a asp-action="Delete" asp-route-id="@item.ID">حذف</a>
+           </td>
+       </tr>
+}
+   </tbody>
+</table>

@@ -1,0 +1,45 @@
+﻿@model AlDawarat_W_AlEngazat.Models.Entities.Course
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>حذف</h1>
+
+<h3>هل انت متاكد من رغبتك في حذف هذه الدورة؟</h3>
+<div>
+    <h4>الدورة</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+           الاسم
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            المكان
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+        <dt class = "col-sm-2">
+            تاريخ البدء
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class = "col-sm-2">
+            تاريخ الانتهاء
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="حذف" class="btn btn-danger" /> |
+        <a asp-action="Index">العودة</a>
+    </form>
+</div>

@@ -1,0 +1,70 @@
+﻿@model AlDawarat_W_AlEngazat.Models.Entities.Employee
+
+@{
+	ViewData["Title"] = "Details";
+}
+
+<h1>التفاصيل</h1>
+
+<h4>الموظف</h4>
+<hr />
+<div>
+	<dl class="row">
+		<dt class="col-sm-2 text-right">
+			الاسم:
+		</dt>
+		<dd class="col-sm-10 text-right">
+			@Html.DisplayFor(model => model.Name)
+		</dd>
+		<dt class="col-sm-2 text-right">
+			الرتبة:
+		</dt>
+		<dd class="col-sm-10 text-right">
+			@Html.DisplayFor(model => model.Rank)
+		</dd>
+		<dt class="col-sm-2 text-right">الرقم: </dt>
+		<dd class="col-sm-10 text-right">
+			@Html.DisplayFor(model => model.Number)
+		</dd>
+		<dt class="col-sm-2 text-right">الفئة:</dt>
+		<dd class="col-sm-10 text-right">
+			@Html.DisplayFor(model => model.Category)
+		</dd>
+		<dt class="col-sm-2 text-right">القسم:</dt>
+		<dd class="col-sm-10 text-right">
+			@Html.DisplayFor(model => model.Department)
+		</dd>
+		<dt class="col-sm-2 text-right">التخصص</dt>
+		<dd class="col-sm-10 text-right">
+			@Html.DisplayFor(model => model.Position)
+		</dd>
+		<dt class="col-sm-2 text-right">المؤهل</dt>
+		<dd class="col-sm-10 text-right">
+			@Html.DisplayFor(model => model.Certificate)
+		</dd>
+		@{
+			if (Model.Courses == null)
+			{
+				<dt class="col-sm-2 text-right">
+					الدورات
+				</dt>
+				<dd class="col-sm-10 text-right">
+					لايوجد
+				</dd>
+
+			} else
+			{
+				<dt class="col-sm-2 text-right">
+					الدورات
+				</dt>
+				<dd class="col-sm-10 text-right">
+					@Html.DisplayFor(model => model.Courses.Name)
+				</dd>
+			}
+		}
+	</dl>
+</div>
+<div>
+	<a asp-action="Edit" asp-route-id="@Model?.ID">تعديل</a> |
+	<a asp-action="Index">رجوع للقائمة السابقه</a>
+</div>

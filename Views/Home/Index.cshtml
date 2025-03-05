@@ -3,39 +3,46 @@
 }
 
 <div class="text-center">
-	<h1 class="display-4">اهلا بكم في </h1>
-	<h2 class="display-3">الدورات والمنجزات</h2>
-	<p class="lead">تطبيق مخصص للتعامل وتنظيم العملاء والمستخدمين</p>
+	<h1 class="display-4 font-monospace">اهلا بكم في </h1>
+	<h2 class="display-3 font-monospace fw-bold">الدورات والمنجزات</h2>
+	<p class="lead fs-2">تطبيق مخصص للتعامل والتنظيم </p>
 	<hr class="my-4">
-	<p>أبدأ بتنظيم الموظفين لديك او استكشف المزيد من الخدمات لدينا</p>
-	<a class="btn btn-primary btn-lg" asp-controller="Users" asp-action="Index" role="button">Manage Users</a>
+	<a class="btn btn-outline-secondary btn-lg" asp-controller="Employees" asp-action="Index" role="button">الذهاب الي قاعده البيانات</a>
 </div>
 
 <div class="row mt-5">
 	<div class="col-md-4">
 		<div class="card">
 			<div class="card-body">
-				<h5 class="card-title">تنظيم المستتخدمين</h5>
+				<h5 class="card-title">قاعده البيانات</h5>
 				<p class="card-text">اضافه, تعديل, حذف او تعديل بيانات المستخدمين</p>
-				<a asp-controller="Users" asp-action="Index" class="btn btn-outline-primary">ابدأ الآن</a>
+				<a asp-controller="Employees" asp-action="Index" class="btn btn-outline-primary">ابدأ الآن</a>
 			</div>
 		</div>
 	</div>
 	<div class="col-md-4">
 		<div class="card">
 			<div class="card-body">
-				<h5 class="card-title">الفئات</h5>
-				<p class="card-text">تنظيم الفئات الموجوده بالنظام</p>
-				<a href="#" class="btn btn-outline-primary">قريبآ</a>
+				<h5 class="card-title">الدورات </h5>
+				<p class="card-text">انشاء وتخصيص الدورات </p>
+				<a asp-controller="Courses" asp-action="Index" class="btn btn-outline-primary">ابدا</a>
 			</div>
 		</div>
 	</div>
 	<div class="col-md-4">
 		<div class="card">
 			<div class="card-body">
-				<h5 class="card-title">Reports</h5>
-				<p class="card-text">تقديم التقارير وتحليل بيانات العملاء </p>
-				<a href="#" class="btn btn-outline-primary">قريبآ</a>
+				<h5 class="card-title">المنجزات</h5>
+				<p class="card-text">مراجعه المنجزات  </p>
+				<a asp-controller="Achievements" asp-action="Index" class="btn btn-outline-primary">ابدأ</a>
+			</div>
+		</div>
+	</div><div class="col-md-4">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">البحث</h5>
+				<p class="card-text">قوائم البحث في التطبيق</p>
+				<a href="#" class="btn btn-outline-primary">قريبا</a>
 			</div>
 		</div>
 	</div>

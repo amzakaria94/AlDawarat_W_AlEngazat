@@ -1,0 +1,72 @@
+﻿@model IEnumerable<AlDawarat_W_AlEngazat.Models.Entities.Course>
+
+@{
+	ViewData["Title"] = "Index";
+}
+
+<h1>الدورات</h1>
+<h3>عدد الدورات : @Model.Count()</h3>
+<p>
+
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				اسم الدوره
+			</th>
+			<th>
+				مكان الدوره
+			</th>
+			<th>
+				تاريخ بدايه الدوره
+			</th>
+			<th>
+				تاريخ نهايه الدوره
+			</th>
+			<th>
+				عدد المنضمين للدورة
+			</th>
+			<th><a asp-action="Create" class="btn btn-outline-success">انشاء دورة جديدة</a></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model) {
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Location)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.StartDate)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.EndDate)
+				</td>
+				<td>
+					@{
+						if (item.Employees == null || !item.Employees.Any())
+						{
+							<span>0</span>
+						} else
+						{
+							@Html.DisplayFor(modelItem => item.Employees.Count)
+						}
+					}
+				</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">تعديل</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">تفاصيل</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">حذف</a> |
+				<a asp-action="AssignEmployee" asp-route-id="@item.ID" class="btn fs-6 btn-outline-dark">اضافة موظف</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<div>
+	
+</div>

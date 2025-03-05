@@ -1,0 +1,16 @@
+﻿@model AlDawarat_W_AlEngazat.Models.Entities.Course
+
+<h2>اضف موظف الى  @Model.Name</h2>
+
+<form asp-action="AssignEmployee" method="post">
+	<input type="hidden" name="id" value="@Model.ID" />
+
+	<div class="form-group">
+		<label for="EmployeeID">اختر الموظف</label>
+		<select name="EmployeeID" class="form-control" asp-items="ViewBag.EmployeeID">
+			<option value="">-- موظف --</option>
+		</select>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Assign</button>
+</form>

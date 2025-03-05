@@ -9,7 +9,9 @@ namespace AlDawarat_W_AlEngazat.Models
 		{
 		}
 
-		public DbSet<User> Users { get; set; }
+		public DbSet<Employee> Employees { get; set; }
 		public DbSet<Achievement> Achievements { get; set; }
+
+		public DbSet<Course> Courses { get; set; }
 	}
 }

@@ -12,10 +12,6 @@ namespace AlDawarat_W_AlEngazat.Models.Entities
 		[DataType(DataType.Date)]
 		public DateTime StartDate { get; set; }
 
-		[DataType(DataType.Date)]
-		public DateTime EndDate { get; set; }
-
-		public int UserID { get; set; }
-		public User? User { get; set; }
+		public string Description { get; set; }
 	}
 }
