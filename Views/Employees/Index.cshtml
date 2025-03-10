@@ -1,0 +1,239 @@
+﻿@using AlDawarat_W_AlEngazat.Models.Entities
+@model PaginatedList<AlDawarat_W_AlEngazat.Models.Entities.Employee>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h3>عرض جميع الاشخاص</h3>
+
+<div class="total-employees mt-3 mb-3 p-3 border rounded mx-auto" style="width: fit-content" id="employeeCount">
+    <h4 class="text-center">إجمالي العدد</h4>
+    <p class="fs-4 text-center text-primary fw-bold" style="cursor: pointer">@ViewData["TotalEmployees"] شخص</p>
+</div>
+
+<div class="container d-flex justify-content-center"><a asp-action="Create" class="btn btn-outline-success ">انشاء شخص جديد</a></div>
+
+<!-- Search Form -->
+<div class="d-flex justify-content-start mt-4">
+    <form asp-action="Index" method="get" class="mb-3 position-relative w-100">
+        <div>
+            <div class="d-flex justify-content-start gap-2 flex-wrap">
+                <div class="col-1 p-0">
+                    <div class="input-group">
+                        <input type="text" id="searchName" name="searchName" class="form-control" placeholder="الاسم  ..." value="@Context.Request.Query["searchName"]" autocomplete="off">
+                    </div>
+                    <div id="searchNameSuggestions" class="dropdown-menu" style="z-index: 1000;"></div>
+                </div>
+                <div class="col-1 p-0">
+                    <div class="input-group">
+                        <input type="text" id="searchRank" name="searchRank" class="form-control" placeholder="الرتبة ..." value="@Context.Request.Query["searchRank"]" autocomplete="off">
+                    </div>
+                    <div id="searchRankSuggestions" class="dropdown-menu " style="z-index: 1000;"></div>
+                </div>
+                <div class="col-1 p-0">
+                    <div class="input-group">
+                        <input type="text" id="searchNumber" name="searchNumber" class="form-control" placeholder="الرقم ..." value="@Context.Request.Query["searchNumber"]" autocomplete="off">
+                    </div>
+                    <div id="searchNumberSuggestions" class="dropdown-menu " style="z-index: 1000;"></div>
+                </div>
+                <div class="col-1 p-0">
+                    <div class="input-group">
+                        <input type="text" id="searchDepartment" name="searchDepartment" class="form-control" placeholder="القسم ..." value="@Context.Request.Query["searchDepartment"]" autocomplete="off">
+                    </div>
+                    <div id="searchDepartmentSuggestions" class="dropdown-menu " style="z-index: 1000;"></div>
+                </div>
+                <div class="col-1 p-0">
+                    <div class="input-group">
+                        <input type="text" id="searchPosition" name="searchPosition" class="form-control" placeholder="التخصص ..." value="@Context.Request.Query["searchPosition"]" autocomplete="off">
+                    </div>
+                    <div id="searchPositionSuggestions" class="dropdown-menu " style="z-index: 1000;"></div>
+                </div>
+                <div class="col-1 p-0">
+                    <div class="input-group">
+                        <input type="text" id="searchCertificate" name="searchCertificate" class="form-control" placeholder="المؤهل ..." value="@Context.Request.Query["searchCertificate"]" autocomplete="off">
+                    </div>
+                    <div id="searchCertificateSuggestions" class="dropdown-menu " style="z-index: 1000;"></div>
+                </div>
+                <div class=" p-0">
+                    <div class="input-group">
+                        <input type="text" id="searchCourseName" name="searchCourseName" class="form-control" placeholder="اسم الدورة ..." value="@Context.Request.Query["searchCourseName"]" autocomplete="off">
+                    </div>
+                    <div id="searchCourseNameSuggestions" class="dropdown-menu " style="z-index: 1000;"></div>
+                </div>
+                <div class="col-1 p-0">
+                    <div class="input-group">
+                        <select name="searchCategory" class="form-control">
+                            <option value="">اختر الفئة</option>
+                            @foreach (var category in ViewBag.EmployeeCategories)
+                            {
+                                var selection = (Context.Request.Query["searchCategory"] == category ? "selected" : "");
+                                <option value="@category" selected=@(ViewBag.SelectedCategory == category ? "selected" : null)>
+                                    @category
+                                </option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="container p-0"><button type="submit" class="btn btn-outline-secondary">بحث</button></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<p class="fs-4 mt-3" id="employeeCount2">
+    عدد الاشخاص: <span class="fw-bold text-primary" style="cursor: pointer;">@Model.Count() من @ViewData["TotalEmployees"]</span>
+</p>
+<table id="employeeTable" class="table" style="display:none">
+    <thead>
+        <tr>
+            <th>الاسم</th>
+            <th>الرتبه</th>
+            <th>الرقم</th>
+            <th>الفئه</th>
+            <th>القسم</th>
+            <th>التخصص</th>
+            <th>المؤهل</th>
+            <th>الدورات "اذا وجد"</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Rank)</td>
+                <td>@Html.DisplayFor(modelItem => item.Number)</td>
+                <td>@Html.DisplayFor(modelItem => item.Category)</td>
+                <td>@Html.DisplayFor(modelItem => item.Department)</td>
+                <td>@Html.DisplayFor(modelItem => item.Position)</td>
+                <td>@Html.DisplayFor(modelItem => item.Certificate)</td>
+                <td>
+                    @if (item.Course == null)
+                    {
+                        <span>-</span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Course.Name)
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">تعديل</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">تفاصيل</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Pagination Controls - Initially Hidden -->
+<div style="display:none" id="nextPreviousButtons">
+    <div>
+        Page @(Model.PageIndex) of @(Model.TotalPages)
+    </div>
+
+    <div class="btn-group" role="group">
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn btn-outline-secondary m-1">التالي</a>
+        }
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn btn-outline-secondary m-1">السابق</a>
+        }
+    </div>
+</div>
+
+<!-- JavaScript to Show Table and Pagination Buttons on Click -->
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var table = document.getElementById("employeeTable");
+            var nextPreviousButtons = document.getElementById("nextPreviousButtons");
+            var employeecount2 = document.getElementById("employeeCount2");
+
+            // Restore visibility state from sessionStorage
+            if (sessionStorage.getItem("tableVisible") === "true") {
+                table.style.display = "table";
+                nextPreviousButtons.style.display = "block";
+                employeecount2.style.display = "block";
+            } else {
+                table.style.display = "none";
+                nextPreviousButtons.style.display = "none";
+                employeecount2.style.display = "none";
+            }
+
+            document.getElementById("employeeCount").addEventListener("click", function () {
+                var isVisible = table.style.display === "none";
+
+                // Toggle visibility
+                table.style.display = isVisible ? "table" : "none";
+                nextPreviousButtons.style.display = isVisible ? "block" : "none";
+                employeecount2.style.display = isVisible ? "block" : "none";
+
+                // Store visibility state in sessionStorage
+                sessionStorage.setItem("tableVisible", isVisible);
+            });
+
+            function fetchSuggestions(input, suggestionsDiv, url) {
+                input.addEventListener("input", function () {
+                    var query = this.value;
+
+                    if (query.length > 2) {
+                        fetch(`${url}?query=${query}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                suggestionsDiv.innerHTML = ""; // Clear previous suggestions
+
+                                let uniqueSuggestions = new Set();
+                                data.forEach(item => uniqueSuggestions.add(item.name)); // Store unique values
+
+                                uniqueSuggestions.forEach(name => {
+                                    var suggestionItem = document.createElement("a");
+                                    suggestionItem.classList.add("dropdown-item");
+                                    suggestionItem.textContent = name;
+                                    suggestionsDiv.appendChild(suggestionItem);
+                                });
+
+                                suggestionsDiv.style.display = uniqueSuggestions.size > 0 ? "block" : "none";
+                            });
+                    } else {
+                        suggestionsDiv.innerHTML = "";
+                        suggestionsDiv.style.display = "none";
+                    }
+                });
+
+                // Handle click event on suggestions
+                suggestionsDiv.addEventListener("click", function (e) {
+                    if (e.target && e.target.nodeName === "A") {
+                        input.value = e.target.textContent; // Set selected item
+                        suggestionsDiv.innerHTML = ""; // Hide suggestions
+                        suggestionsDiv.style.display = "none";
+                    }
+                });
+
+                // Hide suggestions when clicking outside
+                document.addEventListener("click", function (e) {
+                    if (!suggestionsDiv.contains(e.target) && e.target !== input) {
+                        suggestionsDiv.innerHTML = "";
+                        suggestionsDiv.style.display = "none";
+                    }
+                });
+            }
+
+
+            fetchSuggestions(document.getElementById("searchName"), document.getElementById("searchNameSuggestions"), "/Employees/GetEmployeeNames");
+            fetchSuggestions(document.getElementById("searchRank"), document.getElementById("searchRankSuggestions"), "/Employees/GetEmployeeRanks");
+            fetchSuggestions(document.getElementById("searchNumber"), document.getElementById("searchNumberSuggestions"), "/Employees/GetEmployeeNumbers");
+            fetchSuggestions(document.getElementById("searchDepartment"), document.getElementById("searchDepartmentSuggestions"), "/Employees/GetEmployeeDepartments");
+            fetchSuggestions(document.getElementById("searchPosition"), document.getElementById("searchPositionSuggestions"), "/Employees/GetEmployeePositions");
+            fetchSuggestions(document.getElementById("searchCertificate"), document.getElementById("searchCertificateSuggestions"), "/Employees/GetEmployeeCertificates");
+            fetchSuggestions(document.getElementById("searchCourseName"), document.getElementById("searchCourseNameSuggestions"), "/Courses/GetCourseNames");
+        });
+    </script>
+}

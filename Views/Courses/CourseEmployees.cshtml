@@ -1,0 +1,95 @@
+﻿@model AlDawarat_W_AlEngazat.Models.Entities.Course
+
+@{
+    ViewData["Title"] = "الموظفين في الدورة";
+}
+
+<h2>الموظفين في الدورة: @Model.Name</h2>
+
+<!-- Search Form with Autocomplete -->
+<div class="d-flex justify-content-end">
+    <form asp-action="CourseEmployees" method="get" class="mb-3 position-relative">
+        <input type="hidden" name="id" value="@Model.ID" /> <!-- Ensure course ID is passed -->
+        <div class="input-group">
+            <input type="text" id="EmployeeSearch" name="searchQuery" class="form-control" placeholder="ابحث عن موظف ..." value="@ViewData["SearchQuery"]" autocomplete="off">
+            <button type="submit" class="btn btn-primary">بحث</button>
+        </div>
+        <!-- Suggestions List -->
+        <div id="suggestions" class="list-group position-absolute w-100"></div>
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>اسم الموظف</th>
+            <th>الرتبة</th>
+            <th>رقم الموظف</th>
+            <th>الفئة</th>
+            <th>القسم</th>
+            <th>التخصص</th>
+            <th>المؤهل</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model.Employees)
+        {
+            <tr>
+                <td>@employee.Name</td>
+                <td>@employee.Rank</td>
+                <td>@employee.Number</td>
+                <td>@employee.Category</td>
+                <td>@employee.Department</td>
+                <td>@employee.Position</td>
+                <td>@employee.Certificate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">العودة إلى الدورات</a>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var searchInput = document.getElementById("EmployeeSearch");
+            var suggestionsDiv = document.getElementById("suggestions");
+
+            searchInput.addEventListener("input", function () {
+                var query = this.value;
+
+                if (query.length > 2) {
+                    fetch(`/Employees/GetEmployeeNames?query=${query}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            suggestionsDiv.innerHTML = ""; // Clear previous suggestions
+                            data.forEach(employee => {
+                                var suggestionItem = document.createElement("a");
+                                suggestionItem.classList.add("list-group-item", "list-group-item-action");
+                                suggestionItem.textContent = employee.name;
+                                suggestionItem.dataset.id = employee.id;
+                                suggestionsDiv.appendChild(suggestionItem);
+                            });
+                        });
+                } else {
+                    suggestionsDiv.innerHTML = "";
+                }
+            });
+
+            // Handle click event on suggestions
+            suggestionsDiv.addEventListener("click", function (e) {
+                if (e.target && e.target.nodeName === "A") {
+                    searchInput.value = e.target.textContent; // Set selected employee name
+                    suggestionsDiv.innerHTML = ""; // Hide suggestions
+                }
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener("click", function (e) {
+                if (!suggestionsDiv.contains(e.target) && e.target !== searchInput) {
+                    suggestionsDiv.innerHTML = "";
+                }
+            });
+        });
+    </script>
+}

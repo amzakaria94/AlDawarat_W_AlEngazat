@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center">
+    <h1 class="display-4 font-monospace">اهلا بكم في </h1>
+    <h2 class="display-3 font-monospace fw-bold">الدورات والمنجزات</h2>
+    <p class="lead fs-2">تطبيق مخصص للتعامل والتنظيم </p>
+    <hr class="my-4">
+    <a class="btn btn-outline-secondary btn-lg" asp-controller="Employees" asp-action="Index" role="button">الذهاب الي قاعده البيانات</a>
+</div>
+
+<div class="row mt-5 gy-4 d-flex align-items-stretch">
+    <div class="col-md-3 d-flex">
+        <div class="card flex-fill">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">قاعده البيانات</h5>
+                <p class="card-text">اضافه, تعديل, حذف او تعديل بيانات المستخدمين</p>
+                <a asp-controller="Employees" asp-action="Index" class="btn btn-outline-primary mt-auto w-25">ابدأ</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 d-flex">
+        <div class="card flex-fill">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">الدورات </h5>
+                <p class="card-text">انشاء وتخصيص الدورات </p>
+                <a asp-controller="Courses" asp-action="Index" class="btn btn-outline-primary mt-auto w-25">ابدأ</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 d-flex">
+        <div class="card flex-fill">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">المنجزات</h5>
+                <p class="card-text">اضافة المنجزات  </p>
+                <a asp-controller="Achievements" asp-action="Index" class="btn btn-outline-primary mt-auto w-25">ابدأ</a>
+            </div>
+        </div>
+    </div>
+    @* <div class="col-md-3 d-flex">
+        <div class="card flex-fill">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">البحث</h5>
+                <p class="card-text">قوائم البحث في التطبيق</p>
+                <a asp-controller="Search" asp-action="Index" class="btn btn-outline-primary mt-auto w-25">ابدأ </a>
+            </div>
+        </div>
+    </div> *@
+    <div class="col-md-3 d-flex">
+        <div class="card flex-fill">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">الحتمية</h5>
+                <p class="card-text">بحث بالحتمية  </p>
+                <a asp-controller="Inevitability" asp-action="Index" class="btn btn-outline-primary mt-auto w-25">ابدأ</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 d-flex">
+        <div class="card flex-fill">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">المؤهلون</h5>
+                <p class="card-text">بحث بالمؤهلون  </p>
+                <a asp-controller="Qualified" asp-action="Index" class="btn btn-outline-primary mt-auto w-25">ابدأ</a>
+            </div>
+        </div>
+    </div>
+
+
+</div>

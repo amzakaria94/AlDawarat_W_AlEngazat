@@ -1,0 +1,38 @@
+﻿@model AlDawarat_W_AlEngazat.Models.Entities.Achievement
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>حذف</h1>
+
+<h3>هل انت متاكد من حذف هذا المنجز؟</h3>
+<div>
+    <h4>المنجز</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">اسم المنجز
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+           تاريخ بداية المنجز
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class = "col-sm-2">
+          وصف المنجز
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="حذف" class="btn btn-danger" /> |
+        <a asp-action="Index">العودة</a>
+    </form>
+</div>

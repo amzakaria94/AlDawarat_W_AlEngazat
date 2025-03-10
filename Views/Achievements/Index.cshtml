@@ -1,0 +1,137 @@
+﻿@using AlDawarat_W_AlEngazat.Models.Entities
+@model PaginatedList<AlDawarat_W_AlEngazat.Models.Entities.Achievement>
+
+@{
+    ViewData["Title"] = "المنجزات";
+}
+
+<h1>المنجزات</h1>
+
+<!-- Display Number of Achievements -->
+<div class="text-center mt-3">
+    <p class="fw-bold fs-4">
+        عدد المنجزات: <span id="achievementCount" class="text-primary" style="cursor: pointer;">@ViewBag.TotalAchievements</span>
+    </p>
+</div>
+
+<!-- Buttons for Create and Search -->
+<div class="d-flex justify-content-between mb-3">
+    <div>
+        <button id="showSearch" class="btn btn-outline-secondary me-2">بحث</button>
+        <a class="btn btn-outline-secondary" asp-controller="AchievementsSearch" asp-action="Index">بحث متقدم</a>
+    </div>
+    <a class="btn btn-outline-primary me-2" asp-action="Create">اضافة منجز جديد</a>
+
+</div>
+
+<!-- Search Form (Initially Hidden) -->
+<div id="searchForm" class="mb-3" style="display: none;">
+    <form method="get">
+        <div class="row">
+            <!-- Search by Title -->
+            <div class="col-md-2">
+                <label for="searchTitle" class="form-label">اسم المنجز</label>
+                <input type="text" id="searchTitle" name="searchTitle" class="form-control" placeholder="بحث عن اسم المنجز..." value="@Context.Request.Query["searchTitle"]" />
+            </div>
+
+            <!-- Start Date -->
+            <div class="col-md-2">
+                <label for="startDate" class="form-label">تاريخ البداية</label>
+                <input type="date" id="startDate" name="startDate" class="form-control" value="@Context.Request.Query["startDate"]" />
+            </div>
+
+            <!-- End Date -->
+            <div class="col-md-2">
+                <label for="endDate" class="form-label">تاريخ النهاية</label>
+                <input type="date" id="endDate" name="endDate" class="form-control" value="@Context.Request.Query["endDate"]" />
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">بحث</button>
+            </div>
+        </div>
+    </form>
+    <div id="SearchCounter"> عدد البحث: @Model.Count()</div>
+</div>
+
+<!-- Achievements Table (Initially Hidden) -->
+<div id="achievementsTable" style="display: none;">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>اسم المنجز</th>
+                <th>تاريخ الحصول علي المنجز</th>
+                <th>وصف المنجز</th>
+                <th class="text-center"><span class="text-end w-100">@Model.Count() : @ViewBag.TotalAchievements</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                    <td>@Html.DisplayFor(modelItem => item.StartDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID">تعديل</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">تفاصيل</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">حذف</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        Page @(Model.PageIndex) of @(Model.TotalPages)
+    </div>
+
+    <div class="btn-group" role="group">
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn btn-outline-secondary m-1">التالي</a>
+        }
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn btn-outline-secondary m-1">السابق</a>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var achievementCount = document.getElementById("achievementCount");
+            var achievementsTable = document.getElementById("achievementsTable");
+            var showSearchButton = document.getElementById("showSearch");
+            var searchForm = document.getElementById("searchForm");
+
+
+            // Restore visibility state from sessionStorage
+            if (sessionStorage.getItem("achievementsTableVisible") === "true") {
+                achievementsTable.style.display = "block";
+            }
+
+            if (sessionStorage.getItem("searchFormVisible") === "true") {
+                searchForm.style.display = "block";
+
+            }
+
+            // Show achievements table when the achievement count is clicked
+            achievementCount.addEventListener("click", function () {
+                var isVisible = achievementsTable.style.display === "none";
+                achievementsTable.style.display = isVisible ? "block" : "none";
+                sessionStorage.setItem("achievementsTableVisible", isVisible);
+            });
+
+            // Toggle search form visibility
+            showSearchButton.addEventListener("click", function () {
+                var isVisible = searchForm.style.display === "none";
+                searchForm.style.display = isVisible ? "block" : "none";
+
+                sessionStorage.setItem("searchFormVisible", isVisible);
+            });
+        });
+    </script>
+}

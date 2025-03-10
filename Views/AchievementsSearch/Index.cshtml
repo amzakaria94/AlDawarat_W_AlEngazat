@@ -1,0 +1,166 @@
+﻿@{
+    ViewData["Title"] = "بحث الإنجازات";
+}
+
+<h2 class="text-center">بحث الإنجازات</h2>
+
+<form method="post">
+    <div class="row">
+        <div class="col-md-6">
+            <h5>الفترة الأولى:</h5>
+            <label>من</label>
+            <input type="date" name="fromDate1" class="form-control" required>
+            <label>إلى</label>
+            <input type="date" name="toDate1" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+            <h5>الفترة الثانية:</h5>
+            <label>من</label>
+            <input type="date" name="fromDate2" class="form-control" required>
+            <label>إلى</label>
+            <input type="date" name="toDate2" class="form-control" required>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">بحث</button>
+</form>
+
+@if (ViewBag.Achievements1 != null && ViewBag.Achievements2 != null)
+{
+    <div class="mt-4">
+        <h4>نتائج البحث</h4>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h5>الفترة الأولى: <strong>@ViewBag.FromDate1 - @ViewBag.ToDate1</strong></h5>
+                <p>
+                    عدد الإنجازات:
+                    <strong class="toggle-list" data-target="achievementsList1" style="cursor:pointer; color:blue;">
+                        @ViewBag.Count1
+                    </strong>
+                </p>
+                <ul id="achievementsList1" style="display:none;">
+                    @foreach (var achievement in ViewBag.Achievements1)
+                    {
+                        <li>@achievement.Title - @achievement.StartDate.ToShortDateString()</li>
+                    }
+                </ul>
+            </div>
+
+            <div class="col-md-6">
+                <h5>الفترة الثانية: <strong>@ViewBag.FromDate2 - @ViewBag.ToDate2</strong></h5>
+                <p>
+                    عدد الإنجازات:
+                    <strong class="toggle-list" data-target="achievementsList2" style="cursor:pointer; color:blue;">
+                        @ViewBag.Count2
+                    </strong>
+                </p>
+                <ul id="achievementsList2" style="display:none;">
+                    @foreach (var achievement in ViewBag.Achievements2)
+                    {
+                        <li>@achievement.Title - @achievement.StartDate.ToShortDateString()</li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <h5 class="text-center mt-3">نسبة الفرق بين الفترتين: <strong id="percentageDiff"></strong>%</h5>
+
+        <button id="drawChartBtn" class="btn btn-success mt-3">رسم بياني</button>
+        <div class="container d-flex justify-content-between">
+            <div class="w-50">
+                <canvas id="achievementChart" width="200" height="100" style="display:none;"></canvas>
+            </div>
+            <div class="w-25">
+                <canvas id="achievementChartPie" width="25" height="25" style="display:none;"></canvas>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.querySelectorAll('.toggle-list').forEach(item => {
+        item.addEventListener('click', function () {
+            var targetId = this.getAttribute('data-target');
+            var targetElement = document.getElementById(targetId);
+            targetElement.style.display = targetElement.style.display === "none" ? "block" : "none";
+        });
+    });
+
+    document.getElementById('drawChartBtn').addEventListener('click', function () {
+        var ctxBar = document.getElementById('achievementChart').getContext('2d');
+
+                 var ctxPie = document.getElementById('achievementChartPie').getContext('2d');
+        document.getElementById('achievementChart').style.display = 'block';
+        document.getElementById('achievementChartPie').style.display = 'block';
+
+        var count1 = @ViewBag.Count1;
+        var count2 = @ViewBag.Count2;
+
+        var date1End = new Date('@ViewBag.ToDate1');
+        var date2End = new Date('@ViewBag.ToDate2');
+
+        var recentCount = date2End > date1End ? count2 : count1;
+        var previousCount = date2End > date1End ? count1 : count2;
+
+        var percentageDiff = previousCount > 0 ? ((recentCount - previousCount) / previousCount * 100).toFixed(2) : 0;
+        document.getElementById('percentageDiff').innerText = percentageDiff;
+
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['@ViewBag.FromDate1 - @ViewBag.ToDate1', '@ViewBag.FromDate2 - @ViewBag.ToDate2'],
+                datasets: [{
+                    label: 'عدد الإنجازات',
+                    data: [count1, count2],
+                    backgroundColor: ['rgba(75, 192, 192, 0.5)', 'rgba(255, 99, 132, 0.5)'],
+                    borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                    borderWidth: 1,
+                    barPercentage: 0.3,
+                    categoryPercentage: 0.5
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['@ViewBag.FromDate1 - @ViewBag.ToDate1', '@ViewBag.FromDate2 - @ViewBag.ToDate2'],
+                datasets: [{
+                    label: 'عدد الإنجازات',
+                    data: [count1, count2],
+                    backgroundColor: ['rgba(75, 192, 192, 0.5)', 'rgba(255, 99, 132, 0.5)'],
+                    borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.label + ': ' + context.raw;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>

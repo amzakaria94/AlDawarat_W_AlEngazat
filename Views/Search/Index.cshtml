@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Search";
+}
+
+<div class="text-center">
+    <h1 class="display-4 font-monospace">صفحة البحث</h1>
+    <p class="lead fs-2">اختر نوع البحث</p>
+    <hr class="my-4">
+</div>
+
+<div class="row mt-5">
+    @* <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">بحث الانجاز</h5>
+                <p class="card-text">البحث في المنجزات</p>
+                <a asp-controller="AchievementsSearch" asp-action="Index" class="btn btn-outline-primary">ابدأ الآن</a>
+            </div>
+        </div>
+    </div> *@
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">بحث الحتميه</h5>
+                <p class="card-text">البحث حسب الحتمية</p>
+                <a asp-controller="Inevitability" asp-action="Index" class="btn btn-outline-primary">ابدأ الآن</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">بحث بالفئات</h5>
+                <p class="card-text">البحث حسب الفئات المختلفة</p>
+                <a href="#" class="btn btn-outline-primary">ابدأ الآن</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">بحث المؤهلون</h5>
+                <p class="card-text">البحث في قائمة المؤهلين</p>
+                <a asp-controller="Qualified" asp-action="Index" class="btn btn-outline-primary">ابدأ الآن</a>
+            </div>
+        </div>
+    </div>
+</div>

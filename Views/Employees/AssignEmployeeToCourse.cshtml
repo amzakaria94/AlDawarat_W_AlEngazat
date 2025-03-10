@@ -1,0 +1,71 @@
+﻿@model AlDawarat_W_AlEngazat.Models.Entities.Employee
+
+@{
+    ViewData["Title"] = "AssignEmployeeToCourse";
+}
+
+<div>
+    <h4>تعيين إلى دورة</h4>
+    <form asp-action="AssignEmployeeToCourse" method="post">
+        <input type="hidden" name="employeeId" value="@Model.ID" />
+        <div class="form-group col-md-4 position-relative">
+            <label for="CourseName">اختر الدورة</label>
+            <input type="text" id="CourseName" name="CourseName" class="form-control" autocomplete="off" placeholder="اكتب اسم الدورة..." />
+            <input type="hidden" id="CourseID" name="CourseID" />
+            <div class="dropdown-menu w-100" id="courseSuggestions"></div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">تعيين</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var courseNameInput = document.getElementById("CourseName");
+            var suggestionsDiv = document.getElementById("courseSuggestions");
+
+            courseNameInput.addEventListener("input", function () {
+                var query = this.value;
+
+                if (query.length > 2) {
+                    fetch(`/Courses/GetCourseNames?query=${query}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            suggestionsDiv.innerHTML = "";
+                            if (data.length > 0) {
+                                suggestionsDiv.classList.add("show");
+                                data.forEach(course => {
+                                    var suggestionItem = document.createElement("a");
+                                    suggestionItem.classList.add("dropdown-item");
+                                    suggestionItem.dataset.id = course.id;
+                                    suggestionItem.innerHTML = `<span class="float-end">${course.name}</span>`;
+                                    suggestionsDiv.appendChild(suggestionItem);
+                                });
+                            } else {
+                                suggestionsDiv.classList.remove("show");
+                            }
+                        });
+                } else {
+                    suggestionsDiv.innerHTML = "";
+                    suggestionsDiv.classList.remove("show");
+                }
+            });
+
+            suggestionsDiv.addEventListener("click", function (e) {
+                if (e.target && e.target.nodeName === "SPAN") {
+                    courseNameInput.value = e.target.textContent;
+                    document.getElementById("CourseID").value = e.target.parentElement.dataset.id;
+                    suggestionsDiv.innerHTML = "";
+                    suggestionsDiv.classList.remove("show");
+                }
+            });
+
+            document.addEventListener("click", function (e) {
+                if (!suggestionsDiv.contains(e.target) && e.target !== courseNameInput) {
+                    suggestionsDiv.innerHTML = "";
+                    suggestionsDiv.classList.remove("show");
+                }
+            });
+        });
+    </script>
+}

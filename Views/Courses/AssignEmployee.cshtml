@@ -1,0 +1,76 @@
+﻿@model AlDawarat_W_AlEngazat.Models.Entities.Course
+
+<div class="">
+    <h2 class="w-auto">اضف شخص الى  "@Model.Name"</h2>
+    <hr class="w-auto" />
+</div>
+
+<form asp-action="AssignEmployee" method="post">
+    <input type="hidden" name="id" value="@Model.ID" />
+
+    <div class="form-group col-md-4 position-relative">
+        <label for="EmployeeName">اختر الشخص</label>
+        <input type="text" id="EmployeeName" name="EmployeeName" class="form-control ust" autocomplete="off" placeholder="اكتب اسم الشخص الذي تريد اضافته لهذه الدورة..." />
+        <input type="hidden" id="EmployeeID" name="EmployeeID" />
+        <div class="dropdown-menu w-100" id="suggestions"></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">اضافة</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var employeeNameInput = document.getElementById("EmployeeName");
+        var employeeIDInput = document.getElementById("EmployeeID");
+        var suggestionsDiv = document.getElementById("suggestions");
+
+        employeeNameInput.addEventListener("input", function () {
+            var query = this.value.trim();
+            console.log(`query is: ${query}`)
+
+            if (query.length > 2) {
+                fetch(`/Employees/GetEmployeeNames?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        
+                        suggestionsDiv.innerHTML = "";
+                        if (data.length > 0) {
+                            suggestionsDiv.classList.add("show");
+                            data.forEach(employee => {
+                                console.log(employee)
+                                var suggestionItem = document.createElement("a");
+                                suggestionItem.classList.add("dropdown-item");
+                                suggestionItem.dataset.id = employee.id;
+                                suggestionItem.textContent = employee.name;
+                                suggestionsDiv.appendChild(suggestionItem);
+                            });
+                        } else {
+                            suggestionsDiv.classList.remove("show");
+                        }
+                    });
+            } else {
+                suggestionsDiv.innerHTML = "";
+                suggestionsDiv.classList.remove("show");
+            }
+        });
+
+        suggestionsDiv.addEventListener("click", function (e) {
+            var selectedItem = e.target.closest(".dropdown-item"); // Ensures selection works
+            if (selectedItem) {
+                console.log("Selected Employee:", selectedItem.textContent, "ID:", selectedItem.dataset.id); // Debug log
+                employeeNameInput.value = selectedItem.textContent.trim();
+                employeeIDInput.value = selectedItem.dataset.id; // Ensure hidden input gets the ID
+                suggestionsDiv.innerHTML = "";
+                suggestionsDiv.classList.remove("show");
+            }
+        });
+
+        document.querySelector("form").addEventListener("submit", function (e) {
+            console.log("Submitting Form - EmployeeID:", employeeIDInput.value); // Debug log
+            if (!employeeIDInput.value) {
+                e.preventDefault();
+                alert("يجب اختيار شخص من القائمة المنسدلة قبل الإضافة.");
+            }
+        });
+    });
+</script>

@@ -1,0 +1,84 @@
+﻿@model IEnumerable<AlDawarat_W_AlEngazat.Models.Entities.Employee>
+
+@{
+    ViewData["Title"] = "الموظفون";
+}
+
+<h2 class="text-center font-monospace fw-bold m-5"> الحتمية</h2>
+
+<form method="get" class="col-md-8">
+    <div class=" row mb-3 align-items-end">
+        <div class="col-md-3">
+            <label>التخصص</label>
+            <input type="text" id="Position" name="Position" class="form-control" value="@ViewBag.Position">
+        </div>
+
+        <div class="col-md-3">
+            <label>الرتبة</label>
+            <input type="text" id="rank" name="rank" class="form-control" value="@ViewBag.Rank">
+        </div>
+
+        <div class="col-md-3">
+            <label>الزامية</label>
+            <select id="certificate" name="certificate" class="form-control">
+                <option value="">اختر</option>
+                <option value="مؤهل" selected="@(ViewBag.Certificate == "مؤهل")">تاسيسية</option>
+                <option value="غير مؤهل" selected="@(ViewBag.Certificate == "غير مؤهل")">متقدمة</option>
+            </select>
+        </div>
+        <div class="col-md-3"><button type="submit" id="searchBtn" class="btn btn-primary" >بحث</button></div>
+    </div>
+
+</form>
+
+<div> number is : @Model.Count()</div>
+
+<table class="table table-bordered table-striped mt-4">
+    <thead>
+        <tr>
+            <th>الاسم</th>
+            <th>الرتبة</th>
+            <th>الرقم</th>
+            <th>الفئه</th>
+            <th>القسم</th>
+            <th>التخصص</th>
+            <th>المؤهل</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model)
+        {
+            <tr>
+                <td>@employee.Name</td>
+                <td>@employee.Rank</td>
+                <td>@employee.Number</td>
+                <td>@employee.Category</td>
+                <td>@employee.Department</td>
+                <td>@employee.Position</td>
+                <td>@employee.Certificate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    // Enable Search Button Only If All Fields Are Filled
+    document.addEventListener("DOMContentLoaded", function () {
+        let PositionInput = document.getElementById("Position");
+        let rankInput = document.getElementById("rank");
+        let certificateInput = document.getElementById("certificate");
+        let searchBtn = document.getElementById("searchBtn");
+
+        //function checkInputs() {
+        //    if (PositionInput.value.trim() !== "" && rankInput.value.trim() !== "" && certificateInput.value !== "") {
+        //        searchBtn.removeAttribute("disabled");
+        //    } else {
+        //        searchBtn.setAttribute("disabled", "true");
+        //    }
+        //}
+
+        //PositionInput.addEventListener("input", checkInputs);
+        //rankInput.addEventListener("input", checkInputs);
+        //certificateInput.addEventListener("change", checkInputs);
+    });
+</script>

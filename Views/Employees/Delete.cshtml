@@ -1,0 +1,73 @@
+﻿@model AlDawarat_W_AlEngazat.Models.Entities.Employee
+
+@{
+	ViewData["Title"] = "Delete";
+}
+
+<h1>حذف</h1>
+
+<h4>هل تود حذف هذا الموظف ؟ </h4>
+<div>
+	<hr />
+	<h4>الموظف</h4>
+	<dl class="row">
+		<dt class = "col-sm-2">
+			الاسم
+		</dt>
+		<dd class = "col-sm-10">
+			@Html.DisplayFor(model => model.Name)
+		</dd>
+		<dt class = "col-sm-2">
+			الرتبة
+		</dt>
+		<dd class = "col-sm-10">
+			@Html.DisplayFor(model => model.Rank)
+		</dd>
+		<dt class = "col-sm-2">
+			الرقم
+		</dt>
+		<dd class = "col-sm-10">
+			@Html.DisplayFor(model => model.Number)
+		</dd>
+		<dt class = "col-sm-2">
+			الفئة
+		</dt>
+		<dd class = "col-sm-10">
+			@Html.DisplayFor(model => model.Category)
+		</dd>
+		<dt class = "col-sm-2">
+			القسم
+		</dt>
+		<dd class = "col-sm-10">
+			@Html.DisplayFor(model => model.Department)
+		</dd>
+		<dt class = "col-sm-2">التخصص</dt>
+		<dd class = "col-sm-10">
+			@Html.DisplayFor(model => model.Position)
+		</dd>
+		<dt class = "col-sm-2">المؤهل        </dt>
+		<dd class = "col-sm-10">
+			@Html.DisplayFor(model => model.Certificate)
+		</dd>
+		<dt class = "col-sm-2">الدورات</dt>
+		<dd class="col-sm-10">
+			@{
+				if (Model.Course == null)
+				{
+					<span>لا يوجد</span>
+				}
+				else
+				{
+					@Html.DisplayFor(model => model.Course.Name)
+				}
+			}
+		</dd>
+
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">العودة</a>
+    </form>
+</div>

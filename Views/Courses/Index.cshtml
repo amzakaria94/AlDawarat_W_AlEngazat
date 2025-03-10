@@ -1,0 +1,156 @@
+﻿@using AlDawarat_W_AlEngazat.Models.Entities
+@model PaginatedList<AlDawarat_W_AlEngazat.Models.Entities.Course>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>الدورات</h1>
+<h3>عدد : @Model.Count() من @ViewData["totalCourses"]</h3>
+
+<!-- Search Form -->
+<div class="d-flex justify-content-start">
+    <form asp-action="Index" method="get" class="mb-3 position-relative">
+        <div class="d-flex justify-content-start gap-2">
+            <div class="container p-0">
+                <div class="input-group ">
+                    <input type="text" id="searchQuery" name="searchQuery" class="form-control" placeholder=" اسم الدورة ..." value="@Context.Request.Query["searchQuery"]" autocomplete="off">
+                </div>
+                <div id="searchQuerySuggestions" class="dropdown-menu w-50" style="z-index: 1000;"></div>
+            </div>
+            <div class="container p-0">
+                <div class="input-group ">
+                    <input type="text" id="searchLocation" name="searchLocation" class="form-control" placeholder="مكان الدورة ..." value="@Context.Request.Query["searchLocation"]" autocomplete="off">
+                </div>
+                <div id="searchLocationSuggestions" class="dropdown-menu" style="z-index: 1000;"></div>
+            </div>
+            <div class="input-group mb-2">
+                <input type="date" name="searchStartDate" class="form-control" value="@Context.Request.Query["searchStartDate"]">
+                @*<input type="date" name="searchEndDate" class="form-control" value="@Context.Request.Query["searchEndDate"]">*@
+            </div>
+            <div class="input-group mb-2">
+                <select name="employeeCategory" class="form-control">
+                    <option value="">اختر الفئة</option>
+                    @foreach (var category in ViewBag.EmployeeCategories)
+                    {
+                        var selection = (Context.Request.Query["employeeCategory"] == category ? "selected" : "");
+                        <option value="@category" selected=@(ViewBag.SelectedCategory == category ? "selected" : null)>
+                            @category
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="input-group">
+                <div class="container "><button type="submit" class="btn btn-outline-secondary">بحث</button></div>
+            </div>
+        </div>
+    </form>
+</div>
+<a asp-action="Create" class="btn btn-outline-success">انشاء دورة </a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>اسم الدوره</th>
+            <th>مكان الدوره</th>
+            <th>عدد المنضمين للدورة</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Location)</td>
+                <td>
+                    <a asp-action="CourseEmployees" asp-route-id="@item.ID">
+                        @if (item.Employees != null)
+                        {
+                            @item.Employees.Count
+                        }
+                        else
+                        {
+                            <span>0</span>
+                        }
+                    </a>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">تعديل</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">تفاصيل</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">حذف</a> |
+                    <a asp-action="AssignEmployee" asp-route-id="@item.ID" class=" fs-6 ">اضافة</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    Page @(Model.PageIndex) of @(Model.TotalPages)
+</div>
+
+<div class="btn-group" role="group">
+    @if (Model.HasNextPage)
+    {
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn btn-outline-secondary m-1">التالي</a>
+    }
+    @if (Model.HasPreviousPage)
+    {
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn btn-outline-secondary m-1">السابق</a>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var searchQueryInput = document.getElementById("searchQuery");
+            var searchLocationInput = document.getElementById("searchLocation");
+            var searchQuerySuggestions = document.getElementById("searchQuerySuggestions");
+            var searchLocationSuggestions = document.getElementById("searchLocationSuggestions");
+
+            function fetchSuggestions(input, suggestionsDiv, url) {
+                input.addEventListener("input", function () {
+                    var query = this.value;
+
+                    if (query.length > 2) {
+                        fetch(`${url}?query=${query}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                suggestionsDiv.innerHTML = ""; // Clear previous suggestions
+                                data.forEach(item => {
+                                    var suggestionItem = document.createElement("a");
+                                    suggestionItem.classList.add("dropdown-item");
+                                    suggestionItem.textContent = item.name;
+                                    suggestionsDiv.appendChild(suggestionItem);
+                                });
+                                suggestionsDiv.style.display = "block";
+                            });
+                    } else {
+                        suggestionsDiv.innerHTML = "";
+                        suggestionsDiv.style.display = "none";
+                    }
+                });
+
+                // Handle click event on suggestions
+                suggestionsDiv.addEventListener("click", function (e) {
+                    if (e.target && e.target.nodeName === "A") {
+                        input.value = e.target.textContent; // Set selected item
+                        suggestionsDiv.innerHTML = ""; // Hide suggestions
+                        suggestionsDiv.style.display = "none";
+                    }
+                });
+
+                // Hide suggestions when clicking outside
+                document.addEventListener("click", function (e) {
+                    if (!suggestionsDiv.contains(e.target) && e.target !== input) {
+                        suggestionsDiv.innerHTML = "";
+                        suggestionsDiv.style.display = "none";
+                    }
+                });
+            }
+
+            fetchSuggestions(searchQueryInput, searchQuerySuggestions, "/Courses/GetCourseNames");
+            fetchSuggestions(searchLocationInput, searchLocationSuggestions, "/Courses/GetCourseLocations");
+        });
+    </script>
+}
