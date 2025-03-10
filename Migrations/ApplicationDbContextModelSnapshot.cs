@@ -119,6 +119,35 @@ namespace AlDawarat_W_AlEngazat.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("AlDawarat_W_AlEngazat.Models.Entities.PreviousCourse", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("CompletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CourseName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EmployeeID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("EmployeeID");
+
+                    b.ToTable("PreviousCourses");
+                });
+
             modelBuilder.Entity("AlDawarat_W_AlEngazat.Models.Entities.Employee", b =>
                 {
                     b.HasOne("AlDawarat_W_AlEngazat.Models.Entities.Course", "Course")
@@ -128,9 +157,25 @@ namespace AlDawarat_W_AlEngazat.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("AlDawarat_W_AlEngazat.Models.Entities.PreviousCourse", b =>
+                {
+                    b.HasOne("AlDawarat_W_AlEngazat.Models.Entities.Employee", "Employee")
+                        .WithMany("PreviousCourses")
+                        .HasForeignKey("EmployeeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("AlDawarat_W_AlEngazat.Models.Entities.Course", b =>
                 {
                     b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("AlDawarat_W_AlEngazat.Models.Entities.Employee", b =>
+                {
+                    b.Navigation("PreviousCourses");
                 });
 #pragma warning restore 612, 618
         }
