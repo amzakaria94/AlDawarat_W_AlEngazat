@@ -1,5 +1,6 @@
 ﻿using AlDawarat_W_AlEngazat.Areas.Identity.Data;
 using AlDawarat_W_AlEngazat.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,37 +9,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AlDawarat_W_AlEngazat.Controllers
-{
-    public class PreviousCoursesController : Controller
-    {
+namespace AlDawarat_W_AlEngazat.Controllers {
+    [Authorize(Roles = "Admin")]
+    public class PreviousCoursesController : Controller {
         private readonly ApplicationDbContext _context;
 
-        public PreviousCoursesController(ApplicationDbContext context)
-        {
+        public PreviousCoursesController(ApplicationDbContext context) {
             _context = context;
         }
 
         // GET: PreviousCourses
-        public async Task<IActionResult> Index()
-        {
+        public async Task<IActionResult> Index() {
             var applicationDbContext = _context.PreviousCourses.Include(p => p.Employee);
             return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: PreviousCourses/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Details(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var previousCourse = await _context.PreviousCourses
                 .Include(p => p.Employee)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (previousCourse == null)
-            {
+            if (previousCourse == null) {
                 return NotFound();
             }
 
@@ -70,16 +65,13 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }*/
 
         // GET: PreviousCourses/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Edit(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var previousCourse = await _context.PreviousCourses.FindAsync(id);
-            if (previousCourse == null)
-            {
+            if (previousCourse == null) {
                 return NotFound();
             }
             ViewData["EmployeeID"] = new SelectList(_context.Employees, "ID", "Name", previousCourse.EmployeeID);
@@ -91,28 +83,19 @@ namespace AlDawarat_W_AlEngazat.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,CourseName,CompletionDate,Location,EmployeeID")] PreviousCourse previousCourse)
-        {
-            if (id != previousCourse.ID)
-            {
+        public async Task<IActionResult> Edit(int id, [Bind("ID,CourseName,CompletionDate,Location,EmployeeID")] PreviousCourse previousCourse) {
+            if (id != previousCourse.ID) {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            if (ModelState.IsValid) {
+                try {
                     _context.Update(previousCourse);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PreviousCourseExists(previousCourse.ID))
-                    {
+                } catch (DbUpdateConcurrencyException) {
+                    if (!PreviousCourseExists(previousCourse.ID)) {
                         return NotFound();
-                    }
-                    else
-                    {
+                    } else {
                         throw;
                     }
                 }
@@ -123,18 +106,15 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }
 
         // GET: PreviousCourses/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Delete(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var previousCourse = await _context.PreviousCourses
                 .Include(p => p.Employee)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (previousCourse == null)
-            {
+            if (previousCourse == null) {
                 return NotFound();
             }
 
@@ -144,11 +124,9 @@ namespace AlDawarat_W_AlEngazat.Controllers
         // POST: PreviousCourses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
+        public async Task<IActionResult> DeleteConfirmed(int id) {
             var previousCourse = await _context.PreviousCourses.FindAsync(id);
-            if (previousCourse != null)
-            {
+            if (previousCourse != null) {
                 _context.PreviousCourses.Remove(previousCourse);
             }
 
@@ -156,8 +134,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PreviousCourseExists(int id)
-        {
+        private bool PreviousCourseExists(int id) {
             return _context.PreviousCourses.Any(e => e.ID == id);
         }
     }

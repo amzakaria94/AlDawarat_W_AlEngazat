@@ -1,8 +1,7 @@
-﻿// Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this
-// file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using AlDawarat_W_AlEngazat.Areas.Identity.Data;
 using AlDawarat_W_AlEngazat.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -23,8 +22,7 @@ using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AlDawarat_W_AlEngazat.Areas.Identity.Pages.Account {
-
+namespace Test_Project.Areas.Identity.Pages.Account {
     public class RegisterModel : PageModel {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -40,7 +38,8 @@ namespace AlDawarat_W_AlEngazat.Areas.Identity.Pages.Account {
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager) {
+            RoleManager<IdentityRole> roleManager
+            ) {
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
@@ -51,34 +50,32 @@ namespace AlDawarat_W_AlEngazat.Areas.Identity.Pages.Account {
         }
 
         /// <summary>
-        /// This API supports the ASP.NET Core Identity default UI infrastructure and is not
-        /// intended to be used directly from your code. This API may change or be removed in future releases.
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
         /// <summary>
-        /// This API supports the ASP.NET Core Identity default UI infrastructure and is not
-        /// intended to be used directly from your code. This API may change or be removed in future releases.
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public string ReturnUrl { get; set; }
 
         /// <summary>
-        /// This API supports the ASP.NET Core Identity default UI infrastructure and is not
-        /// intended to be used directly from your code. This API may change or be removed in future releases.
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         /// <summary>
-        /// This API supports the ASP.NET Core Identity default UI infrastructure and is not
-        /// intended to be used directly from your code. This API may change or be removed in future releases.
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public class InputModel {
-
             /// <summary>
-            /// This API supports the ASP.NET Core Identity default UI infrastructure and is not
-            /// intended to be used directly from your code. This API may change or be removed in
-            /// future releases.
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
             [EmailAddress]
@@ -86,9 +83,8 @@ namespace AlDawarat_W_AlEngazat.Areas.Identity.Pages.Account {
             public string Email { get; set; }
 
             /// <summary>
-            /// This API supports the ASP.NET Core Identity default UI infrastructure and is not
-            /// intended to be used directly from your code. This API may change or be removed in
-            /// future releases.
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -97,9 +93,8 @@ namespace AlDawarat_W_AlEngazat.Areas.Identity.Pages.Account {
             public string Password { get; set; }
 
             /// <summary>
-            /// This API supports the ASP.NET Core Identity default UI infrastructure and is not
-            /// intended to be used directly from your code. This API may change or be removed in
-            /// future releases.
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
@@ -107,19 +102,20 @@ namespace AlDawarat_W_AlEngazat.Areas.Identity.Pages.Account {
             public string ConfirmPassword { get; set; }
 
             public string? Role { get; set; }
+
             [ValidateNever]
             public IEnumerable<SelectListItem> RoleList { get; set; }
         }
 
+
         public async Task OnGetAsync(string returnUrl = null) {
-            if (!await _roleManager.RoleExistsAsync(SD.Role_Customer)) {
+            if (!_roleManager.RoleExistsAsync(SD.Role_Admin).GetAwaiter().GetResult()) {
                 await _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin));
                 await _roleManager.CreateAsync(new IdentityRole(SD.Role_Employee));
                 await _roleManager.CreateAsync(new IdentityRole(SD.Role_Customer));
             }
-
             Input = new() {
-                RoleList = _roleManager.Roles.Select(r => r.Name).Select(i => new SelectListItem {
+                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem {
                     Text = i,
                     Value = i
                 })
@@ -141,11 +137,8 @@ namespace AlDawarat_W_AlEngazat.Areas.Identity.Pages.Account {
 
                 if (result.Succeeded) {
                     _logger.LogInformation("User created a new account with password.");
-
                     if (!string.IsNullOrEmpty(Input.Role)) {
                         await _userManager.AddToRoleAsync(user, Input.Role);
-                    } else {
-                        await _userManager.AddToRoleAsync(user, SD.Role_Customer);
                     }
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

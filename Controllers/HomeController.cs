@@ -1,25 +1,23 @@
 using AlDawarat_W_AlEngazat.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace AlDawarat_W_AlEngazat.Controllers;
 
-public class HomeController : Controller
-{
+
+public class HomeController : Controller {
     private readonly ILogger<HomeController> _logger;
 
-    public HomeController(ILogger<HomeController> logger)
-    {
+    public HomeController(ILogger<HomeController> logger) {
         _logger = logger;
     }
-
-    public IActionResult Index()
-    {
+    [Authorize(Roles = "Employee, Admin")]
+    public IActionResult Index() {
         return View();
     }
 
-    public IActionResult DisabledFeature()
-    {
+    public IActionResult DisabledFeature() {
         return View("DisabledFeature");
     }
 
@@ -34,8 +32,7 @@ public class HomeController : Controller
     //}
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
+    public IActionResult Error() {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

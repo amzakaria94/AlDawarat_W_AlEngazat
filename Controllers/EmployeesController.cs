@@ -1,23 +1,22 @@
 ﻿using AlDawarat_W_AlEngazat.Areas.Identity.Data;
 using AlDawarat_W_AlEngazat.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace AlDawarat_W_AlEngazat.Controllers
-{
-    public class EmployeesController : Controller
-    {
+namespace AlDawarat_W_AlEngazat.Controllers {
+
+    public class EmployeesController : Controller {
         private readonly ApplicationDbContext _context;
 
-        public EmployeesController(ApplicationDbContext context)
-        {
+        public EmployeesController(ApplicationDbContext context) {
             _context = context;
         }
 
+        [Authorize(Roles = "Employee, Admin")]
         // GET: Employees
-        public async Task<IActionResult> Index(string searchName, string searchRank, string searchNumber, string searchDepartment, string searchPosition, string searchCertificate, string searchCourseName, string searchCategory, int? pageNumber)
-        {
+        public async Task<IActionResult> Index(string searchName, string searchRank, string searchNumber, string searchDepartment, string searchPosition, string searchCertificate, string searchCourseName, string searchCategory, int? pageNumber) {
             var employees = _context.Employees
                 .Include(e => e.Course)
                 .AsQueryable();
@@ -30,43 +29,35 @@ namespace AlDawarat_W_AlEngazat.Controllers
             var totalEmployees = await _context.Employees.CountAsync();
             ViewData["TotalEmployees"] = totalEmployees;
 
-            if (!string.IsNullOrEmpty(searchName))
-            {
+            if (!string.IsNullOrEmpty(searchName)) {
                 employees = employees.Where(e => e.Name.Contains(searchName));
             }
 
-            if (!string.IsNullOrEmpty(searchRank))
-            {
+            if (!string.IsNullOrEmpty(searchRank)) {
                 employees = employees.Where(e => e.Rank.Contains(searchRank));
             }
 
-            if (!string.IsNullOrEmpty(searchNumber))
-            {
+            if (!string.IsNullOrEmpty(searchNumber)) {
                 employees = employees.Where(e => e.Number.Contains(searchNumber));
             }
 
-            if (!string.IsNullOrEmpty(searchDepartment))
-            {
+            if (!string.IsNullOrEmpty(searchDepartment)) {
                 employees = employees.Where(e => e.Department.Contains(searchDepartment));
             }
 
-            if (!string.IsNullOrEmpty(searchPosition))
-            {
+            if (!string.IsNullOrEmpty(searchPosition)) {
                 employees = employees.Where(e => e.Position.Contains(searchPosition));
             }
 
-            if (!string.IsNullOrEmpty(searchCertificate))
-            {
+            if (!string.IsNullOrEmpty(searchCertificate)) {
                 employees = employees.Where(e => e.Certificate.Contains(searchCertificate));
             }
 
-            if (!string.IsNullOrEmpty(searchCourseName))
-            {
+            if (!string.IsNullOrEmpty(searchCourseName)) {
                 employees = employees.Where(e => e.Course.Name.Contains(searchCourseName));
             }
 
-            if (!string.IsNullOrEmpty(searchCategory))
-            {
+            if (!string.IsNullOrEmpty(searchCategory)) {
                 employees = employees.Where(e => e.Category == searchCategory);
                 ViewBag.SelectedCategory = searchCategory;
             }
@@ -78,11 +69,9 @@ namespace AlDawarat_W_AlEngazat.Controllers
         // Other actions...
 
         [HttpGet]
-        public async Task<IActionResult> GetEmployeeNames(string query)
-        {
+        public async Task<IActionResult> GetEmployeeNames(string query) {
             Console.WriteLine("Query: " + query);
-            if (string.IsNullOrWhiteSpace(query))
-            {
+            if (string.IsNullOrWhiteSpace(query)) {
                 return Json(new List<object>()); // Return empty list if query is empty
             }
 
@@ -95,8 +84,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEmployeeRanks(string query)
-        {
+        public async Task<IActionResult> GetEmployeeRanks(string query) {
             var employeeRanks = await _context.Employees
                 .Where(e => e.Rank.Contains(query))
                 .Select(e => new { name = e.Rank })
@@ -106,8 +94,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEmployeeNumbers(string query)
-        {
+        public async Task<IActionResult> GetEmployeeNumbers(string query) {
             var employeeNumbers = await _context.Employees
                 .Where(e => e.Number.Contains(query))
                 .Select(e => new { name = e.Number })
@@ -117,8 +104,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEmployeeDepartments(string query)
-        {
+        public async Task<IActionResult> GetEmployeeDepartments(string query) {
             var employeeDepartments = await _context.Employees
                 .Where(e => e.Department.Contains(query))
                 .Select(e => new { name = e.Department })
@@ -128,8 +114,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEmployeePositions(string query)
-        {
+        public async Task<IActionResult> GetEmployeePositions(string query) {
             var employeePositions = await _context.Employees
                 .Where(e => e.Position.Contains(query))
                 .Select(e => new { name = e.Position })
@@ -139,8 +124,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEmployeeCertificates(string query)
-        {
+        public async Task<IActionResult> GetEmployeeCertificates(string query) {
             var employeeCertificates = await _context.Employees
                 .Where(e => e.Certificate.Contains(query))
                 .Select(e => new { name = e.Certificate })
@@ -150,10 +134,8 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }
 
         // GET: Employees/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Details(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
@@ -162,8 +144,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
                 .Include(e => e.PreviousCourses)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (employee == null)
-            {
+            if (employee == null) {
                 return NotFound();
             }
 
@@ -173,8 +154,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }
 
         // GET: Employees/Create
-        public IActionResult Create()
-        {
+        public IActionResult Create() {
             ViewData["CourseID"] = new SelectList(_context.Courses, "ID", "Location");
             return View();
         }
@@ -183,10 +163,8 @@ namespace AlDawarat_W_AlEngazat.Controllers
         // properties you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Rank,Number,Category,Department,Position,Certificate,CourseID")] Employee employee)
-        {
-            if (ModelState.IsValid)
-            {
+        public async Task<IActionResult> Create([Bind("ID,Name,Rank,Number,Category,Department,Position,Certificate,CourseID")] Employee employee) {
+            if (ModelState.IsValid) {
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -195,56 +173,45 @@ namespace AlDawarat_W_AlEngazat.Controllers
             return View(employee);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Employees/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Edit(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
-            {
+            if (employee == null) {
                 return NotFound();
             }
             ViewData["CourseID"] = new SelectList(_context.Courses, "ID", "Location", employee.CourseID);
             return View(employee);
         }
 
+        [Authorize(Roles = "Admin, Employee")]
         // POST: Employees/Edit/5 To protect from overposting attacks, enable the specific
         // properties you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Rank,Number,Category,Department,Position,Certificate,CourseID")] Employee employee)
-        {
-            if (id != employee.ID)
-            {
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Rank,Number,Category,Department,Position,Certificate,CourseID")] Employee employee) {
+            if (id != employee.ID) {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            if (ModelState.IsValid) {
+                try {
                     var existingEmployee = await _context.Employees.AsNoTracking().FirstOrDefaultAsync(e => e.ID == id);
-                    if (existingEmployee == null)
-                    {
+                    if (existingEmployee == null) {
                         return NotFound();
                     }
 
                     employee.CourseID = existingEmployee.CourseID;
                     _context.Update(employee);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EmployeeExists(employee.ID))
-                    {
+                } catch (DbUpdateConcurrencyException) {
+                    if (!EmployeeExists(employee.ID)) {
                         return NotFound();
-                    }
-                    else
-                    {
+                    } else {
                         throw;
                     }
                 }
@@ -254,11 +221,10 @@ namespace AlDawarat_W_AlEngazat.Controllers
             return View(employee);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Employees/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Delete(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
@@ -266,8 +232,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
                 .Include(e => e.Course) // Use Course (not Courses)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (employee == null)
-            {
+            if (employee == null) {
                 return NotFound();
             }
 
@@ -277,11 +242,9 @@ namespace AlDawarat_W_AlEngazat.Controllers
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
+        public async Task<IActionResult> DeleteConfirmed(int id) {
             var employee = await _context.Employees.FindAsync(id);
-            if (employee != null)
-            {
+            if (employee != null) {
                 _context.Employees.Remove(employee);
             }
 
@@ -290,18 +253,15 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }
 
         // GET: Employees/AssignEmployeeToCourse/5
-        public async Task<IActionResult> AssignEmployeeToCourse(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> AssignEmployeeToCourse(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var employee = await _context.Employees
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (employee == null)
-            {
+            if (employee == null) {
                 return NotFound();
             }
 
@@ -311,17 +271,14 @@ namespace AlDawarat_W_AlEngazat.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AssignEmployeeToCourse(int employeeId, int courseId)
-        {
+        public async Task<IActionResult> AssignEmployeeToCourse(int employeeId, int courseId) {
             var employee = await _context.Employees.FindAsync(employeeId);
-            if (employee == null)
-            {
+            if (employee == null) {
                 return NotFound();
             }
 
             var course = await _context.Courses.FindAsync(courseId);
-            if (course == null)
-            {
+            if (course == null) {
                 return NotFound();
             }
 
@@ -333,23 +290,19 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }
 
         // GET: Employees/AddPreviousCourse/5
-        public async Task<IActionResult> AddPreviousCourse(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> AddPreviousCourse(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var employee = await _context.Employees
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (employee == null)
-            {
+            if (employee == null) {
                 return NotFound();
             }
 
-            var previousCourse = new PreviousCourse
-            {
+            var previousCourse = new PreviousCourse {
                 EmployeeID = employee.ID,
                 CompletionDate = DateTime.Today // Set a default date
             };
@@ -360,18 +313,14 @@ namespace AlDawarat_W_AlEngazat.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddPreviousCourse([Bind("CourseName,CompletionDate,Location,EmployeeID")] PreviousCourse previousCourse)
-        {
+        public async Task<IActionResult> AddPreviousCourse([Bind("CourseName,CompletionDate,Location,EmployeeID")] PreviousCourse previousCourse) {
             // Remove ID from the binding to let the database generate it automatically
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            if (ModelState.IsValid) {
+                try {
                     // Verify the employee exists
                     var employee = await _context.Employees.FindAsync(previousCourse.EmployeeID);
-                    if (employee == null)
-                    {
+                    if (employee == null) {
                         ModelState.AddModelError("EmployeeID", "Employee not found");
                         return View(previousCourse);
                     }
@@ -382,9 +331,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
 
                     // Redirect to the employee details page or another appropriate page
                     return RedirectToAction("Details", new { id = previousCourse.EmployeeID });
-                }
-                catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     // Log the error
                     Console.WriteLine($"Error adding previous course: {ex.Message}");
                     ModelState.AddModelError("", "An error occurred while saving the previous course. Please try again.");
@@ -395,10 +342,8 @@ namespace AlDawarat_W_AlEngazat.Controllers
             return View(previousCourse);
         }
         // GET: Employees/ViewPreviousCourses/5
-        public async Task<IActionResult> ViewPreviousCourses(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> ViewPreviousCourses(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
@@ -406,16 +351,14 @@ namespace AlDawarat_W_AlEngazat.Controllers
                 .Include(e => e.PreviousCourses)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (employee == null)
-            {
+            if (employee == null) {
                 return NotFound();
             }
 
             return View(employee);
         }
 
-        private bool EmployeeExists(int id)
-        {
+        private bool EmployeeExists(int id) {
             return _context.Employees.Any(e => e.ID == id);
         }
     }

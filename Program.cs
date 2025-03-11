@@ -16,6 +16,21 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(option => {
+    option.LoginPath = "/Identity/Account/Login";
+    option.LogoutPath = "/Identity/Account/Logout";
+    option.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    /*option.SlidingExpiration = true;
+    option.Cookie.Name = "MyCookie";
+    option.Cookie.HttpOnly = true;
+    option.Cookie.SameSite = SameSiteMode.Strict;
+    option.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    option.Cookie.Expiration = TimeSpan.FromDays(14);*/
+});
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 
 builder.Services.AddControllersWithViews();
@@ -40,6 +55,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
+
+// configure the default route for the application is the login page
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

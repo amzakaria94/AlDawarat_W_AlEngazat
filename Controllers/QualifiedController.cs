@@ -1,27 +1,24 @@
 ﻿using AlDawarat_W_AlEngazat.Areas.Identity.Data;
 using AlDawarat_W_AlEngazat.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AlDawarat_W_AlEngazat.Controllers
-{
-    public class QualifiedController : Controller
-    {
+namespace AlDawarat_W_AlEngazat.Controllers {
+    [Authorize(Roles = "Admin")]
+    public class QualifiedController : Controller {
         private readonly ApplicationDbContext _context;
 
-        public QualifiedController(ApplicationDbContext context)
-        {
+        public QualifiedController(ApplicationDbContext context) {
             _context = context;
         }
 
         [HttpGet]
-        public IActionResult Index(string department, string category, string position)
-        {
+        public IActionResult Index(string department, string category, string position) {
             var employees = _context.Employees.AsQueryable();
 
-            if (!string.IsNullOrEmpty(department))
-            {
+            if (!string.IsNullOrEmpty(department)) {
                 employees = employees.Where(e => e.Department.Contains(department));
                 ViewBag.DepartmentQuery = department;
                 ViewBag.DepartmentSuggestions = _context.Employees
@@ -31,14 +28,12 @@ namespace AlDawarat_W_AlEngazat.Controllers
                     .ToList();
             }
 
-            if (!string.IsNullOrEmpty(category))
-            {
+            if (!string.IsNullOrEmpty(category)) {
                 employees = employees.Where(e => e.Category == category);
                 ViewBag.SelectedCategory = category;
             }
 
-            if (!string.IsNullOrEmpty(position))
-            {
+            if (!string.IsNullOrEmpty(position)) {
                 employees = employees.Where(e => e.Position.Contains(position));
                 ViewBag.PositionQuery = position;
                 ViewBag.PositionSuggestions = _context.Employees
@@ -54,8 +49,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetDepartmentSuggestions(string term)
-        {
+        public JsonResult GetDepartmentSuggestions(string term) {
             var departments = _context.Employees
                 .Where(e => e.Department.Contains(term))
                 .Select(e => e.Department)
@@ -66,8 +60,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetPositionSuggestions(string term)
-        {
+        public JsonResult GetPositionSuggestions(string term) {
             var positions = _context.Employees
                 .Where(e => e.Position.Contains(term))
                 .Select(e => e.Position)
