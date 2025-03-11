@@ -1,4 +1,4 @@
-﻿using AlDawarat_W_AlEngazat.Models;
+﻿using AlDawarat_W_AlEngazat.Areas.Identity.Data;
 using AlDawarat_W_AlEngazat.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
