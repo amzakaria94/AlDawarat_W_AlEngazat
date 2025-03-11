@@ -1,0 +1,39 @@
+﻿@model AlDawarat_W_AlEngazat.Models.Entities.PreviousCourse
+
+@{
+    ViewData["Title"] = "Add Previous Course";
+}
+
+<h2>اضافه دورة سابقة</h2>
+
+<form asp-action="AddPreviousCourse">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="EmployeeID" />
+    <div class="form-group">
+        <label asp-for="CourseName" class="control-label"> الاسم</label>
+        <input asp-for="CourseName" class="form-control" />
+        <span asp-validation-for="CourseName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Location" class="control-label">المكان</label>
+        <input asp-for="Location" class="form-control" />
+        <span asp-validation-for="Location" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CompletionDate" class="control-label">التاريخ</label>
+        <input asp-for="CompletionDate" class="form-control" type="date" />
+        <span asp-validation-for="CompletionDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Add" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Details" asp-route-id="@Model.EmployeeID">Back to Employee Details</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
