@@ -41,7 +41,7 @@
         <dd class="col-sm-10 text-right">
             @Html.DisplayFor(model => model.Certificate)
         </dd>
-        <dt class="col-sm-2 text-right">الدورات</dt>
+        <dt class="col-sm-2 text-right">الدورات الحالية</dt>
         <dd class="col-sm-10 text-right">
             @if (Model.Course != null)
             {
@@ -52,14 +52,25 @@
                 <span>لا يوجد</span>
             }
         </dd>
+        <dt class="col-sm-4">
+            الدورات السابقة
+        </dt>
+        <dd class="col-sm-8">
+            <a asp-action="ViewPreviousCourses" asp-route-id="@Model.ID">
+                @(Model.PreviousCourses?.Count ?? 0) دورة
+            </a>
+        </dd>
     </dl>
 </div>
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">تعديل</a> |
-    <a asp-action="Index">رجوع للقائمة السابقه</a> |
+    <a asp-action="Index">رجوع</a> |
     @if (Model.Course == null)
     {
         <a asp-action="AssignEmployeeToCourse" asp-route-id="@Model.ID">اضافة دورة</a>
+        <div class="d-inline"> | </div>
     }
+
+    <a asp-action="AddPreviousCourse" asp-route-id="@Model.ID" class="">اضافة دورة سابقة</a>
 </div>

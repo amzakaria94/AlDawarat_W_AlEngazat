@@ -1,0 +1,47 @@
+﻿@model AlDawarat_W_AlEngazat.Models.Entities.Employee
+
+@{
+    ViewData["Title"] = "Previous Courses";
+}
+
+<h1>الدورات السابقة</h1>
+<h4> @Model.Name</h4>
+<hr />
+
+<p>
+    <a asp-action="AddPreviousCourse" asp-route-id="@Model.ID" class="btn btn-primary">اضافة دورات اخري</a>
+    <a asp-action="Details" asp-route-id="@Model.ID" class="btn btn-secondary">العودة</a>
+</p>
+
+@if (Model.PreviousCourses != null && Model.PreviousCourses.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>اسم الدورة</th>
+                <th>التاريخ</th>
+                <th>المكان</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in Model.PreviousCourses)
+            {
+                <tr>
+                    <td>@course.CourseName</td>
+                    <td>@course.CompletionDate.ToShortDateString()</td>
+                    <td>@course.Location</td>
+                    <td>
+                        <a asp-controller="PreviousCourses" asp-action="Details" asp-route-id="@course.ID">تفاصيل</a> |
+                        <a asp-controller="PreviousCourses" asp-action="Edit" asp-route-id="@course.ID">تعديل</a> |
+                        <a asp-controller="PreviousCourses" asp-action="Delete" asp-route-id="@course.ID">حذف</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No previous courses found for this employee.</p>
+}

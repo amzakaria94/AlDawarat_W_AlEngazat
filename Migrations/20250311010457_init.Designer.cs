@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AlDawarat_W_AlEngazat.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250310112741_Init")]
-    partial class Init
+    [Migration("20250311010457_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

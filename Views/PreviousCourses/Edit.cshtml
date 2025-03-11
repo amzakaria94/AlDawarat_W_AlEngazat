@@ -1,25 +1,26 @@
 ﻿@model AlDawarat_W_AlEngazat.Models.Entities.PreviousCourse
 
 @{
-    ViewData["Title"] = "Add Previous Course";
+    ViewData["Title"] = "Edit";
 }
 
-<h2>اضافة دورة سابقة الي "@ViewBag.EmployeeName"</h2>
+<h1>تعديل</h1>
 
+@*<h4>PreviousCourse</h4>*@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddPreviousCourse" method="post">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EmployeeID" />
+            <input type="hidden" asp-for="ID" />
             <div class="form-group">
-                <label asp-for="CourseName" class="control-label">الاسم</label>
+                <label asp-for="CourseName" class="control-label">اسم الدورة</label>
                 <input asp-for="CourseName" class="form-control" />
                 <span asp-validation-for="CourseName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CompletionDate" class="control-label">التاريخ</label>
-                <input asp-for="CompletionDate" class="form-control" type="date" />
+                <input asp-for="CompletionDate" class="form-control" />
                 <span asp-validation-for="CompletionDate" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -28,14 +29,19 @@
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="اضافة" class="btn btn-primary mt-2" />
+                <label asp-for="EmployeeID" class="control-label"></label>
+                <select asp-for="EmployeeID" class="form-control" asp-items="ViewBag.EmployeeID"></select>
+                <span asp-validation-for="EmployeeID" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Details" asp-route-id="@Model.EmployeeID">العودة للقائمة السابقة</a>
+    <a asp-action="Index">العودة</a>
 </div>
 
 @section Scripts {

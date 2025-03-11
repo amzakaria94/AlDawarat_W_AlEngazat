@@ -1,0 +1,49 @@
+﻿@model IEnumerable<AlDawarat_W_AlEngazat.Models.Entities.PreviousCourse>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>الدورات السابقة</h1>
+
+<p>
+    @*<a asp-action="Create">اضافة جديد</a>*@
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                الاسم
+            </th>
+            <th>التاريخ</th>
+            <th>المكان</th>
+            <th>
+              عدد الاشخاص
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompletionDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">تعديل</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">بيانات</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">حذف</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

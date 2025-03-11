@@ -159,6 +159,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
 
             var employee = await _context.Employees
                 .Include(e => e.Course) // FIX: Use 'Course' instead of 'Courses'
+                .Include(e => e.PreviousCourses)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
             if (employee == null)
@@ -226,6 +227,13 @@ namespace AlDawarat_W_AlEngazat.Controllers
             {
                 try
                 {
+                    var existingEmployee = await _context.Employees.AsNoTracking().FirstOrDefaultAsync(e => e.ID == id);
+                    if (existingEmployee == null)
+                    {
+                        return NotFound();
+                    }
+
+                    employee.CourseID = existingEmployee.CourseID;
                     _context.Update(employee);
                     await _context.SaveChangesAsync();
                 }
@@ -240,7 +248,7 @@ namespace AlDawarat_W_AlEngazat.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = employee.ID });
             }
             ViewData["CourseID"] = new SelectList(_context.Courses, "ID", "Location", employee.CourseID);
             return View(employee);
@@ -322,6 +330,88 @@ namespace AlDawarat_W_AlEngazat.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Details), new { id = employeeId });
+        }
+
+        // GET: Employees/AddPreviousCourse/5
+        public async Task<IActionResult> AddPreviousCourse(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var employee = await _context.Employees
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            var previousCourse = new PreviousCourse
+            {
+                EmployeeID = employee.ID,
+                CompletionDate = DateTime.Today // Set a default date
+            };
+
+            ViewBag.EmployeeName = employee.Name; // Add employee name to ViewBag for display
+            return View(previousCourse);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddPreviousCourse([Bind("CourseName,CompletionDate,Location,EmployeeID")] PreviousCourse previousCourse)
+        {
+            // Remove ID from the binding to let the database generate it automatically
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Verify the employee exists
+                    var employee = await _context.Employees.FindAsync(previousCourse.EmployeeID);
+                    if (employee == null)
+                    {
+                        ModelState.AddModelError("EmployeeID", "Employee not found");
+                        return View(previousCourse);
+                    }
+
+                    // Add the previous course
+                    _context.PreviousCourses.Add(previousCourse);
+                    await _context.SaveChangesAsync();
+
+                    // Redirect to the employee details page or another appropriate page
+                    return RedirectToAction("Details", new { id = previousCourse.EmployeeID });
+                }
+                catch (Exception ex)
+                {
+                    // Log the error
+                    Console.WriteLine($"Error adding previous course: {ex.Message}");
+                    ModelState.AddModelError("", "An error occurred while saving the previous course. Please try again.");
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(previousCourse);
+        }
+        // GET: Employees/ViewPreviousCourses/5
+        public async Task<IActionResult> ViewPreviousCourses(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var employee = await _context.Employees
+                .Include(e => e.PreviousCourses)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            return View(employee);
         }
 
         private bool EmployeeExists(int id)

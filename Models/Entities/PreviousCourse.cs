@@ -15,9 +15,9 @@ namespace AlDawarat_W_AlEngazat.Models.Entities
 
         public string Location { get; set; }
 
+        [ForeignKey("EmployeeID")]
         public int EmployeeID { get; set; }
 
-        [ForeignKey("EmployeeID")]
-        public Employee Employee { get; set; }
+        public Employee? Employee { get; set; }
     }
 }

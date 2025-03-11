@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = "Feature Disabled";
+}
+
+<div class="text-center">
+    <h1 class="text-danger">Feature Disabled</h1>
+    <h2 class="text-danger">This feature is currently disabled.</h2>
+    <p>The page you're trying to access is temporarily unavailable.</p>
+</div>
+
+<!-- Back Button -->
+<div class="mt-4">
+    <button onclick="goBack()" class="btn btn-secondary">Back to Previous Page</button>
+</div>
+
+<script>
+    function goBack() {
+        window.history.back()
+    }
+</script>

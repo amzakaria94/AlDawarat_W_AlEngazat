@@ -26,6 +26,11 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "disabledFeature",
+    pattern: "YourController/YourDisabledAction/{id?}",
+    defaults: new { controller = "Home", action = "DisabledFeature" });
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 

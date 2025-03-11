@@ -1,0 +1,41 @@
+﻿@model AlDawarat_W_AlEngazat.Models.Entities.PreviousCourse
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>حذف</h1>
+
+<h3>هل انت متاكد</h3>
+<div>
+   @* <h4>PreviousCourse</h4>*@
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+           الاسم
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CourseName)
+        </dd>
+        <dt class = "col-sm-2">
+            التاريخ
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CompletionDate)
+        </dd>
+        <dt class = "col-sm-2">المكان</dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+        <dt class = "col-sm-2">الموظف</dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Employee.Name)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="حذف" class="btn btn-danger" /> |
+        <a asp-action="Index">العودة</a>
+    </form>
+</div>
