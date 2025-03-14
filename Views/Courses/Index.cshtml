@@ -31,8 +31,7 @@
             <div class="input-group mb-2">
                 <select name="employeeCategory" class="form-control">
                     <option value="">اختر الفئة</option>
-                    @foreach (var category in ViewBag.EmployeeCategories)
-                    {
+                    @foreach (var category in ViewBag.EmployeeCategories) {
                         var selection = (Context.Request.Query["employeeCategory"] == category ? "selected" : "");
                         <option value="@category" selected=@(ViewBag.SelectedCategory == category ? "selected" : null)>
                             @category
@@ -54,26 +53,33 @@
             <th>اسم الدوره</th>
             <th>مكان الدوره</th>
             <th>عدد المنضمين للدورة</th>
+            <th>ألايام المتبقية</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
+        @foreach (var item in Model) {
+            var daysLeft = (item.EndDate - DateTime.Now).Days;
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.Location)</td>
                 <td>
                     <a asp-action="CourseEmployees" asp-route-id="@item.ID">
-                        @if (item.Employees != null)
-                        {
+                        @if (item.Employees != null) {
                             @item.Employees.Count
-                        }
-                        else
-                        {
+                        } else {
                             <span>0</span>
                         }
                     </a>
+                </td>
+                <td>
+                    @if (daysLeft >= 0) {
+
+                        @daysLeft
+
+                    } else {
+                        <span>انتهت</span>
+                    }
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.ID">تعديل</a> |
@@ -90,12 +96,10 @@
 </div>
 
 <div class="btn-group" role="group">
-    @if (Model.HasNextPage)
-    {
+    @if (Model.HasNextPage) {
         <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn btn-outline-secondary m-1">التالي</a>
     }
-    @if (Model.HasPreviousPage)
-    {
+    @if (Model.HasPreviousPage) {
         <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn btn-outline-secondary m-1">السابق</a>
     }
 </div>
@@ -103,54 +107,54 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            var searchQueryInput = document.getElementById("searchQuery");
-            var searchLocationInput = document.getElementById("searchLocation");
-            var searchQuerySuggestions = document.getElementById("searchQuerySuggestions");
-            var searchLocationSuggestions = document.getElementById("searchLocationSuggestions");
+            var searchQueryInput = document.getElementById("searchQuery")
+            var searchLocationInput = document.getElementById("searchLocation")
+            var searchQuerySuggestions = document.getElementById("searchQuerySuggestions")
+            var searchLocationSuggestions = document.getElementById("searchLocationSuggestions")
 
             function fetchSuggestions(input, suggestionsDiv, url) {
                 input.addEventListener("input", function () {
-                    var query = this.value;
+                    var query = this.value
 
                     if (query.length > 2) {
                         fetch(`${url}?query=${query}`)
                             .then(response => response.json())
                             .then(data => {
-                                suggestionsDiv.innerHTML = ""; // Clear previous suggestions
+                                suggestionsDiv.innerHTML = "" // Clear previous suggestions
                                 data.forEach(item => {
-                                    var suggestionItem = document.createElement("a");
-                                    suggestionItem.classList.add("dropdown-item");
-                                    suggestionItem.textContent = item.name;
-                                    suggestionsDiv.appendChild(suggestionItem);
-                                });
-                                suggestionsDiv.style.display = "block";
-                            });
+                                    var suggestionItem = document.createElement("a")
+                                    suggestionItem.classList.add("dropdown-item")
+                                    suggestionItem.textContent = item.name
+                                    suggestionsDiv.appendChild(suggestionItem)
+                                })
+                                suggestionsDiv.style.display = "block"
+                            })
                     } else {
-                        suggestionsDiv.innerHTML = "";
-                        suggestionsDiv.style.display = "none";
+                        suggestionsDiv.innerHTML = ""
+                        suggestionsDiv.style.display = "none"
                     }
-                });
+                })
 
                 // Handle click event on suggestions
                 suggestionsDiv.addEventListener("click", function (e) {
                     if (e.target && e.target.nodeName === "A") {
-                        input.value = e.target.textContent; // Set selected item
-                        suggestionsDiv.innerHTML = ""; // Hide suggestions
-                        suggestionsDiv.style.display = "none";
+                        input.value = e.target.textContent // Set selected item
+                        suggestionsDiv.innerHTML = "" // Hide suggestions
+                        suggestionsDiv.style.display = "none"
                     }
-                });
+                })
 
                 // Hide suggestions when clicking outside
                 document.addEventListener("click", function (e) {
                     if (!suggestionsDiv.contains(e.target) && e.target !== input) {
-                        suggestionsDiv.innerHTML = "";
-                        suggestionsDiv.style.display = "none";
+                        suggestionsDiv.innerHTML = ""
+                        suggestionsDiv.style.display = "none"
                     }
-                });
+                })
             }
 
-            fetchSuggestions(searchQueryInput, searchQuerySuggestions, "/Courses/GetCourseNames");
-            fetchSuggestions(searchLocationInput, searchLocationSuggestions, "/Courses/GetCourseLocations");
+            fetchSuggestions(searchQueryInput, searchQuerySuggestions, "/Courses/GetCourseNames")
+            fetchSuggestions(searchLocationInput, searchLocationSuggestions, "/Courses/GetCourseLocations")
         });
     </script>
 }

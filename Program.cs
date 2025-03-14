@@ -9,10 +9,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope()) {
+    var services = scope.ServiceProvider;
+    try {
+        var dbContext = services.GetRequiredService<ApplicationDbContext>();
+        dbContext.Database.Migrate(); // Automatically applies migrations
+    } catch (Exception ex) {
+        Console.WriteLine($"Database migration failed: {ex.Message}");
+    }
+}
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
+if (!app.Environment.IsDevelopment()) {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();

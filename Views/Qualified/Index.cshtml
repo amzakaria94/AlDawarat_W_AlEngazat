@@ -27,8 +27,7 @@
             <label for="category">فئة:</label>
             <select id="category" name="category" class="form-control">
                 <option value="">الكل</option>
-                @foreach (var category in ViewBag.Categories)
-                {
+                @foreach (var category in ViewBag.Categories) {
                     <option value="@category" selected="@(ViewBag.SelectedCategory == category ? "selected" : null)">@category</option>
                 }
             </select>
@@ -40,39 +39,39 @@
 
 </form>
 
-@if (Model.Any())
-{
-   
+@if (Model.Any()) {
+
 
     <!-- Qualification Filters -->
-<div id="qualificationFilter" class="d-flex mt-3 align-content-center justify-content-between" style="display: none;">
-    <div class="col-md-4 d-flex align-items-center justify-content-start">
-        <label class="me-4">التأهيل:</label>
-        <div class="d-flex align-items-center">
-            <div class="form-check me-3">
-                <input class="form-check-input qualification-radio" type="radio" name="qualificationFilter" value="مؤهل" selected="@(ViewBag.SelectedQualification == "مؤهل" ? "selected" : null)">
-                <label class="form-check-label">مؤهل </label>
-            </div>
-            <div class="form-check me-3">
-                <input class="form-check-input qualification-radio" type="radio" name="qualificationFilter" value="غير مؤهل" selected="@(ViewBag.SelectedQualification == "مؤهل" ? "selected" : null)">
-                <label class="form-check-label">غير مؤهل</label>
+    <div id="qualificationFilter" class="d-flex mt-3 align-content-center justify-content-between" style="display: none;">
+        <div class="col-md-4 d-flex align-items-center justify-content-start">
+            <label class="me-4">التأهيل:</label>
+            <div class="d-flex align-items-center">
+                <div class="form-check me-3">
+                    <input class="form-check-input qualification-radio" type="radio" name="qualificationFilter" value="مؤهل" selected="@(ViewBag.SelectedQualification == "مؤهل" ? "selected" : null)">
+                    <label class="form-check-label">مؤهل </label>
+                </div>
+                <div class="form-check me-3">
+                    <input class="form-check-input qualification-radio" type="radio" name="qualificationFilter" value="غير مؤهل" selected="@(ViewBag.SelectedQualification == "مؤهل" ? "selected" : null)">
+                    <label class="form-check-label">غير مؤهل</label>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Display Number of Employees -->
-    <div class="text-center mt-3">
-        <p class="fw-bold fs-4">
-            العدد : <span id="employeeCount" class="text-primary" style="cursor: pointer;">@Model.Count()</span>
-        </p>
-    </div>
+        <!-- Display Number of Employees -->
+        <div class="text-center mt-3">
+            <p class="fw-bold fs-4">
+                عدد : <span id="employeeCount" class="text-primary" style="cursor: pointer;">@Model.Count()</span>
+            </p>
+        </div>
 
-    <!-- Display Percentage -->
-    <div class="col-md-4 text-start align-content-center">
-        <p class="fw-bold fs-4"> النسبة :  <span id="percentageDisplay">0 %</span>
-        </p>
+        <!-- Display Percentage -->
+        <div class="col-md-4 text-start align-content-center">
+            <p class="fw-bold fs-4">
+                النسبة :  <span id="percentageDisplay">0 %</span>
+            </p>
+        </div>
     </div>
-</div>
     <div id="matchingEmployeeNumber" class="text-start fs-5 " style="display:none"></div>
 
     <!-- Employee Table -->
@@ -88,8 +87,7 @@
             </tr>
         </thead>
         <tbody id="employeeTable">
-            @foreach (var employee in Model)
-            {
+            @foreach (var employee in Model) {
                 <tr data-certificate="@employee.Certificate">
                     <td>@employee.Name</td>
                     <td>@employee.Number</td>
@@ -101,9 +99,7 @@
             }
         </tbody>
     </table>
-}
-else
-{
+} else {
     <p class="text-center mt-3">لا يوجد نتائج مطابقة للبحث.</p>
 }
 
@@ -123,39 +119,39 @@ else
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            var qualificationFilterDiv = document.getElementById("qualificationFilter");
-            var percentageDisplay = document.getElementById("percentageDisplay");
-            var rows = document.querySelectorAll("#employeeTable tr");
-            var matchingEmployeeNumber = document.getElementById("matchingEmployeeNumber");
-            var drawChartBtn = document.getElementById("drawChartBtn");
-            var achievementChart = document.getElementById("achievementChart");
-            var achievementChartPie = document.getElementById("achievementChartPie");
+            var qualificationFilterDiv = document.getElementById("qualificationFilter")
+            var percentageDisplay = document.getElementById("percentageDisplay")
+            var rows = document.querySelectorAll("#employeeTable tr")
+            var matchingEmployeeNumber = document.getElementById("matchingEmployeeNumber")
+            var drawChartBtn = document.getElementById("drawChartBtn")
+            var achievementChart = document.getElementById("achievementChart")
+            var achievementChartPie = document.getElementById("achievementChartPie")
 
             function updatePercentage(selectedValue) {
-                let totalEmployees = 0;
-                let matchingEmployees = 0;
+                let totalEmployees = 0
+                let matchingEmployees = 0
 
                 rows.forEach(function (row) {
-                    let certificate = row.getAttribute("data-certificate");
-                    let isQualified = (certificate === "تأسيسة" || certificate === "متقدمة");
-                    let isNotQualified = (certificate === "غير مؤهل");
+                    let certificate = row.getAttribute("data-certificate")
+                    let isQualified = (certificate === "تأسيسة" || certificate === "متقدمة")
+                    let isNotQualified = (certificate === "غير مؤهل")
 
                     // Count total employees
                     if (isQualified || isNotQualified) {
-                        totalEmployees++;
+                        totalEmployees++
                     }
 
                     // Count matching employees based on the selected filter
                     if ((selectedValue === "مؤهل" && isQualified) ||
                         (selectedValue === "غير مؤهل" && isNotQualified)) {
-                        matchingEmployees++;
+                        matchingEmployees++
                     }
-                });
+                })
 
-                let percentage = totalEmployees > 0 ? Math.round((matchingEmployees / totalEmployees) * 100) : 0;
-                percentageDisplay.textContent = percentage + "%";
-                matchingEmployeeNumber.innerText = "عدد :" + " " + matchingEmployees;
-                matchingEmployeeNumber.style.display = "block";
+                let percentage = totalEmployees > 0 ? Math.round((matchingEmployees / totalEmployees) * 100) : 0
+                percentageDisplay.textContent = percentage + "%"
+                matchingEmployeeNumber.innerText = "العدد :" + " " + matchingEmployees
+                matchingEmployeeNumber.style.display = "block"
             }
 
 
@@ -183,7 +179,7 @@ else
                             }
                         }
                     }
-                });
+                })
 
                 var pieChart = new Chart(achievementChartPie, {
                     type: 'pie',
@@ -197,144 +193,144 @@ else
                     options: {
                         responsive: true
                     }
-                });
+                })
 
-                achievementChart.style.display = 'block';
-                achievementChartPie.style.display = 'block';
+                achievementChart.style.display = 'block'
+                achievementChartPie.style.display = 'block'
             }
 
             // Handle qualification radio button filtering
-            var radios = document.querySelectorAll(".qualification-radio");
+            var radios = document.querySelectorAll(".qualification-radio")
             // console.log(radios)
             radios.forEach(function (radio) {
                 radio.addEventListener("change", function () {
-                    var selectedValue = this.value;
+                    var selectedValue = this.value
 
                     rows.forEach(function (row) {
-                        var certificate = row.getAttribute("data-certificate");
+                        var certificate = row.getAttribute("data-certificate")
 
                         if (selectedValue === "مؤهل" && (certificate === "تأسيسة" || certificate === "متقدمة")) {
-                            row.style.display = "";
+                            row.style.display = ""
                         } else if (selectedValue === "غير مؤهل" && certificate === "غير مؤهل") {
-                            row.style.display = "";
+                            row.style.display = ""
                         } else {
-                            row.style.display = "none";
+                            row.style.display = "none"
                         }
-                    });
+                    })
                     // console.log(selectedValue);
-                    updatePercentage(selectedValue);
+                    updatePercentage(selectedValue)
                     updateChart(selectedValue)
-                });
-            });
+                })
+            })
 
             // Show employee table and percentage display when the employee count is clicked
-            var employeeCount = document.getElementById("employeeCount");
-            var employeeTable = document.getElementById("employeeTable");
+            var employeeCount = document.getElementById("employeeCount")
+            var employeeTable = document.getElementById("employeeTable")
             employeeCount.addEventListener("click", function () {
                 if (employeeTable.style.display === "none" || employeeTable.style.display === "") {
-                    employeeTable.style.display = "table";
-                    qualificationFilterDiv.style.display = "block";
+                    employeeTable.style.display = "table"
+                    qualificationFilterDiv.style.display = "block"
                 } else {
-                    employeeTable.style.display = "none";
-                    qualificationFilterDiv.style.display = "none";
+                    employeeTable.style.display = "none"
+                    qualificationFilterDiv.style.display = "none"
                 }
-            });
+            })
 
             // Handle department suggestions
-            var departmentInput = document.getElementById("department");
-            var departmentSuggestions = document.getElementById("departmentSuggestions");
+            var departmentInput = document.getElementById("department")
+            var departmentSuggestions = document.getElementById("departmentSuggestions")
 
             departmentInput.addEventListener("input", function () {
-                var query = this.value;
+                var query = this.value
 
                 if (query.length > 2) {
                     fetch(`/Qualified/GetDepartmentSuggestions?term=${query}`)
                         .then(response => response.json())
                         .then(data => {
-                            departmentSuggestions.innerHTML = "";
+                            departmentSuggestions.innerHTML = ""
                             data.forEach(function (item) {
-                                var suggestionItem = document.createElement("a");
-                                suggestionItem.classList.add("list-group-item", "list-group-item-action");
-                                suggestionItem.textContent = item;
+                                var suggestionItem = document.createElement("a")
+                                suggestionItem.classList.add("list-group-item", "list-group-item-action")
+                                suggestionItem.textContent = item
                                 suggestionItem.addEventListener("click", function () {
-                                    departmentInput.value = item;
-                                    departmentSuggestions.innerHTML = "";
-                                });
-                                departmentSuggestions.appendChild(suggestionItem);
-                            });
-                        });
+                                    departmentInput.value = item
+                                    departmentSuggestions.innerHTML = ""
+                                })
+                                departmentSuggestions.appendChild(suggestionItem)
+                            })
+                        })
                 } else {
-                    departmentSuggestions.innerHTML = "";
+                    departmentSuggestions.innerHTML = ""
                 }
-            });
+            })
 
             // Handle position suggestions
-            var positionInput = document.getElementById("position");
-            var positionSuggestions = document.getElementById("positionSuggestions");
+            var positionInput = document.getElementById("position")
+            var positionSuggestions = document.getElementById("positionSuggestions")
 
             positionInput.addEventListener("input", function () {
-                var query = this.value;
+                var query = this.value
 
                 if (query.length > 2) {
                     fetch(`/Qualified/GetPositionSuggestions?term=${query}`)
                         .then(response => response.json())
                         .then(data => {
-                            positionSuggestions.innerHTML = "";
+                            positionSuggestions.innerHTML = ""
                             data.forEach(function (item) {
-                                var suggestionItem = document.createElement("a");
-                                suggestionItem.classList.add("list-group-item", "list-group-item-action");
-                                suggestionItem.textContent = item;
+                                var suggestionItem = document.createElement("a")
+                                suggestionItem.classList.add("list-group-item", "list-group-item-action")
+                                suggestionItem.textContent = item
                                 suggestionItem.addEventListener("click", function () {
-                                    positionInput.value = item;
-                                    positionSuggestions.innerHTML = "";
-                                });
-                                positionSuggestions.appendChild(suggestionItem);
-                            });
-                        });
+                                    positionInput.value = item
+                                    positionSuggestions.innerHTML = ""
+                                })
+                                positionSuggestions.appendChild(suggestionItem)
+                            })
+                        })
                 } else {
-                    positionSuggestions.innerHTML = "";
+                    positionSuggestions.innerHTML = ""
                 }
-            });
+            })
 
             // Handle category selection
-            var categorySelect = document.getElementById("category");
+            var categorySelect = document.getElementById("category")
             categorySelect.addEventListener("change", function () {
                 // Handle category change if needed
-                console.log("Category selected: " + this.value);
-            });
+                console.log("Category selected: " + this.value)
+            })
 
             function updateChart(selectedValue) {
-                let totalQualified = 0;
-                let totalNotQualified = 0;
+                let totalQualified = 0
+                let totalNotQualified = 0
 
                 rows.forEach(function (row) {
-                    let certificate = row.getAttribute("data-certificate");
+                    let certificate = row.getAttribute("data-certificate")
                     if (certificate === "تأسيسة" || certificate === "متقدمة") {
-                        totalQualified++;
+                        totalQualified++
                     } else if (certificate === "غير مؤهل") {
-                        totalNotQualified++;
+                        totalNotQualified++
                     }
-                });
+                })
 
-                let totalEmployees = totalQualified + totalNotQualified;
-                let matchingEmployees = (selectedValue === "مؤهل") ? totalQualified : totalNotQualified;
+                let totalEmployees = totalQualified + totalNotQualified
+                let matchingEmployees = (selectedValue === "مؤهل") ? totalQualified : totalNotQualified
 
-                let percentage = totalEmployees > 0 ? Math.round((matchingEmployees / totalEmployees) * 100) : 0;
-                percentageDisplay.textContent = percentage + "%";
+                let percentage = totalEmployees > 0 ? Math.round((matchingEmployees / totalEmployees) * 100) : 0
+                percentageDisplay.textContent = percentage + "%"
 
-                return [totalQualified, totalNotQualified, totalEmployees];
+                return [totalQualified, totalNotQualified, totalEmployees]
             }
 
 
             drawChartBtn.addEventListener("click", function () {
-                achievementChart.style.display = "block";
-                achievementChartPie.style.display = "block";
-                var selectedValue = document.querySelector(".qualification-radio:checked");
-                var [totalQualified, totalNotQualified, totalEmployees] = updateChart(selectedValue);
+                achievementChart.style.display = "block"
+                achievementChartPie.style.display = "block"
+                var selectedValue = document.querySelector(".qualification-radio:checked")
+                var [totalQualified, totalNotQualified, totalEmployees] = updateChart(selectedValue)
                 if (selectedValue) {
                     drawCharts(totalQualified, totalNotQualified)
                 } else {
-                    updateChart(""); // Update charts with all employees
+                    updateChart("") // Update charts with all employees
                 }
 
 
@@ -342,7 +338,7 @@ else
                 // ✅ Always toggle chart visibility
 
 
-            });
+            })
         });
 
 
