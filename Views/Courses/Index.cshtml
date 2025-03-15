@@ -24,11 +24,11 @@
                 </div>
                 <div id="searchLocationSuggestions" class="dropdown-menu" style="z-index: 1000;"></div>
             </div>
-            <div class="input-group mb-2">
+            <div class="input-group mb-2 gap-2">
                 <input type="date" name="searchStartDate" class="form-control" value="@Context.Request.Query["searchStartDate"]">
-                @*<input type="date" name="searchEndDate" class="form-control" value="@Context.Request.Query["searchEndDate"]">*@
             </div>
-            <div class="input-group mb-2">
+            <div><input type="date" name="searchEndDate" class="form-control" value="@Context.Request.Query["searchEndDate"]"></div>
+            <div class="input-group mb-2 w-50">
                 <select name="employeeCategory" class="form-control">
                     <option value="">اختر الفئة</option>
                     @foreach (var category in ViewBag.EmployeeCategories) {

@@ -535,6 +535,10 @@
   width: 100% !important;
 }
 
+w-fit {
+    width: fit-content !important;
+}
+
 .w-auto {
   width: auto !important;
 }

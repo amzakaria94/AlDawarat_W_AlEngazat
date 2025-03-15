@@ -127,6 +127,14 @@
             var achievementChart = document.getElementById("achievementChart")
             var achievementChartPie = document.getElementById("achievementChartPie")
 
+            if (window.barChartInstance) {
+                window.barChartInstance.destroy()
+            }
+            if (window.pieChartInstance) {
+                window.pieChartInstance.destroy()
+            }
+
+
             function updatePercentage(selectedValue) {
                 let totalEmployees = 0
                 let matchingEmployees = 0
@@ -158,12 +166,19 @@
 
 
             function drawCharts(matchingEmployees, nonMatchingEmployees) {
+                if (window.barChartInstance) {
+                    window.barChartInstance.destroy()
+                }
+                if (window.pieChartInstance) {
+                    window.pieChartInstance.destroy()
+                }
+
                 var barChart = new Chart(achievementChart, {
                     type: 'bar',
                     data: {
                         labels: ['المؤهلون', 'غير المؤهلون'],
                         datasets: [{
-                            label: 'Employee Count',
+                            label: "عدد الاشخاص",
                             data: [matchingEmployees, nonMatchingEmployees],
                             backgroundColor: ['#4CAF50', '#FF6384'],
                             borderWidth: 1,

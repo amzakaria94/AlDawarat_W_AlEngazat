@@ -2,33 +2,44 @@
     ViewData["Title"] = "بحث الإنجازات";
 }
 
-<h2 class="text-center">بحث الإنجازات</h2>
+<div class="container w-fit">
+    <h2 class="text-center">بحث الإنجازات</h2>
+    <hr class="" />
+</div>
 
-<form method="post">
-    <div class="row">
-        <div class="col-md-6">
-            <h5>الفترة الأولى:</h5>
-            <label>من</label>
-            <input type="date" name="fromDate1" class="form-control" required>
-            <label>إلى</label>
-            <input type="date" name="toDate1" class="form-control" required>
+<div class="container">
+    <form method="post">
+        <div class="row">
+            <div class="col-md-3">
+                <h5>الفترة الأولى:</h5>
+                <hr />
+                <label>من</label>
+                <input type="date" name="fromDate1" class="form-control" required>
+                <label>إلى</label>
+                <input type="date" name="toDate1" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+                <h5>الفترة الثانية:</h5>
+                <hr />
+                <label>من</label>
+                <input type="date" name="fromDate2" class="form-control" required>
+                <label>إلى</label>
+                <input type="date" name="toDate2" class="form-control" required>
+            </div>
         </div>
-        <div class="col-md-6">
-            <h5>الفترة الثانية:</h5>
-            <label>من</label>
-            <input type="date" name="fromDate2" class="form-control" required>
-            <label>إلى</label>
-            <input type="date" name="toDate2" class="form-control" required>
+
+        <button type="submit" class="btn btn-primary mt-3 shadow">بحث</button>
+    </form>
+</div>
+
+<hr class="mb-0 col-md-6 border border-dark border-1" />
+
+@if (ViewBag.Achievements1 != null && ViewBag.Achievements2 != null) {
+    <div class="mt-4 ">
+        <div class="w-fit">
+            <h4>نتائج البحث</h4>
+            <hr />
         </div>
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-3">بحث</button>
-</form>
-
-@if (ViewBag.Achievements1 != null && ViewBag.Achievements2 != null)
-{
-    <div class="mt-4">
-        <h4>نتائج البحث</h4>
 
         <div class="row">
             <div class="col-md-6">
@@ -39,12 +50,11 @@
                         @ViewBag.Count1
                     </strong>
                 </p>
-                <ul id="achievementsList1" style="display:none;">
-                    @foreach (var achievement in ViewBag.Achievements1)
-                    {
+                <ol id="achievementsList1" style="display:none;">
+                    @foreach (var achievement in ViewBag.Achievements1) {
                         <li>@achievement.Title - @achievement.StartDate.ToShortDateString()</li>
                     }
-                </ul>
+                </ol>
             </div>
 
             <div class="col-md-6">
@@ -55,16 +65,15 @@
                         @ViewBag.Count2
                     </strong>
                 </p>
-                <ul id="achievementsList2" style="display:none;">
-                    @foreach (var achievement in ViewBag.Achievements2)
-                    {
+                <ol id="achievementsList2" style="display:none;">
+                    @foreach (var achievement in ViewBag.Achievements2) {
                         <li>@achievement.Title - @achievement.StartDate.ToShortDateString()</li>
                     }
-                </ul>
+                </ol>
             </div>
         </div>
 
-        <h5 class="text-center mt-3">نسبة الفرق بين الفترتين: <strong id="percentageDiff"></strong>%</h5>
+        <h5 class="text-center mt-3">النسبة بين الفترتين: <strong id="percentageDiff"></strong> %</h5>
 
         <button id="drawChartBtn" class="btn btn-success mt-3">رسم بياني</button>
         <div class="container d-flex justify-content-between">
@@ -81,37 +90,57 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+
     document.querySelectorAll('.toggle-list').forEach(item => {
         item.addEventListener('click', function () {
-            var targetId = this.getAttribute('data-target');
-            var targetElement = document.getElementById(targetId);
-            targetElement.style.display = targetElement.style.display === "none" ? "block" : "none";
-        });
+            var targetId = this.getAttribute('data-target')
+            var targetElement = document.getElementById(targetId)
+            targetElement.style.display = targetElement.style.display === "none" ? "block" : "none"
+        })
     });
-
+    // Function to handle chart creation
     document.getElementById('drawChartBtn').addEventListener('click', function () {
         var ctxBar = document.getElementById('achievementChart').getContext('2d');
+        var ctxPie = document.getElementById('achievementChartPie').getContext('2d');
 
-                 var ctxPie = document.getElementById('achievementChartPie').getContext('2d');
+        // Show charts when the button is clicked
         document.getElementById('achievementChart').style.display = 'block';
         document.getElementById('achievementChartPie').style.display = 'block';
 
+        // Ensure any existing charts are destroyed before creating new ones
+        if (window.barChartInstance) {
+            window.barChartInstance.destroy();
+        }
+        if (window.pieChartInstance) {
+            window.pieChartInstance.destroy();
+        }
+
+        // Get the count of achievements
         var count1 = @ViewBag.Count1;
         var count2 = @ViewBag.Count2;
+        var totalCounts = count1 + count2;
 
+        // Ensure the dates are correctly formatted as JavaScript Date objects
         var date1End = new Date('@ViewBag.ToDate1');
         var date2End = new Date('@ViewBag.ToDate2');
 
+        // Compare the counts for the two periods
         var recentCount = date2End > date1End ? count2 : count1;
         var previousCount = date2End > date1End ? count1 : count2;
 
-        var percentageDiff = previousCount > 0 ? ((recentCount - previousCount) / previousCount * 100).toFixed(2) : 0;
+        // Calculate the percentage difference
+        var recentCountPercentage = (recentCount / (recentCount + previousCount)) * 100;
+        var previousCountPercentage = (previousCount / (recentCount + previousCount)) * 100;
+
+        // If the previous period has zero achievements, set the difference to 0
+        var percentageDiff = previousCount > 0 ? `${count1/(totalCounts) * 100} : ${count2/totalCounts * 100}` : '0';
         document.getElementById('percentageDiff').innerText = percentageDiff;
 
-        new Chart(ctxBar, {
+        // Bar chart configuration
+        window.barChartInstance = new Chart(ctxBar, {
             type: 'bar',
             data: {
-                labels: ['@ViewBag.FromDate1 - @ViewBag.ToDate1', '@ViewBag.FromDate2 - @ViewBag.ToDate2'],
+                labels: ['الفترة الاولي', 'الفترة الثانية'],
                 datasets: [{
                     label: 'عدد الإنجازات',
                     data: [count1, count2],
@@ -134,10 +163,11 @@
             }
         });
 
-        new Chart(ctxPie, {
+        // Pie chart configuration
+        window.pieChartInstance = new Chart(ctxPie, {
             type: 'pie',
             data: {
-                labels: ['@ViewBag.FromDate1 - @ViewBag.ToDate1', '@ViewBag.FromDate2 - @ViewBag.ToDate2'],
+                labels: ['الفترة الاولي', 'الفترة الثانية'],
                 datasets: [{
                     label: 'عدد الإنجازات',
                     data: [count1, count2],

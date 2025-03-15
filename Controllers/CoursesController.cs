@@ -35,13 +35,22 @@ namespace AlDawarat_W_AlEngazat.Controllers {
                 courses = courses.Where(c => c.Location.Contains(searchLocation));
             }
 
-            if (!string.IsNullOrEmpty(searchStartDate) && DateTime.TryParse(searchStartDate, out DateTime startDate)) {
-                courses = courses.Where(c => c.StartDate >= startDate);
+            // For courses that overlap with the search date range
+            if (!string.IsNullOrEmpty(searchStartDate) && !string.IsNullOrEmpty(searchEndDate) &&
+                DateTime.TryParse(searchStartDate, out DateTime startDate) &&
+                DateTime.TryParse(searchEndDate, out DateTime endDate)) {
+
+                courses = courses.Where(c =>
+                    // Course starts before search end date AND ends after search start date
+                    c.StartDate <= endDate && c.StartDate >= startDate
+                );
+
+                //var counter = 1;
+                //foreach (var course in courses) {
+                //    Console.WriteLine($"{counter++} - {course.StartDate} ");
+                //}
             }
 
-            if (!string.IsNullOrEmpty(searchEndDate) && DateTime.TryParse(searchEndDate, out DateTime endDate)) {
-                courses = courses.Where(c => c.EndDate <= endDate);
-            }
 
             if (!string.IsNullOrEmpty(employeeCategory)) {
                 courses = courses.Where(c => c.Employees.Any(e => e.Category == employeeCategory));
