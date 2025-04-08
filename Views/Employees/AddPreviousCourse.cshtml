@@ -6,29 +6,36 @@
 
 <h2>اضافة دورة سابقة الي "@ViewBag.EmployeeName"</h2>
 
-<hr />
+<hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="AddPreviousCourse" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EmployeeID" />
+            <input type="hidden" asp-for="EmployeeID"/>
             <div class="form-group">
-                <label asp-for="CourseName" class="control-label">الاسم</label>
-                <input asp-for="CourseName" class="form-control" />
+                <label asp-for="CourseName" class="control-label">اسم الدورة السابقة</label>
+                <input asp-for="CourseName" class="form-control"/>
                 <span asp-validation-for="CourseName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CompletionDate" class="control-label">التاريخ</label>
-                <input asp-for="CompletionDate" class="form-control" type="date" />
-                <span asp-validation-for="CompletionDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Location" class="control-label">المكان</label>
-                <input asp-for="Location" class="form-control" />
+                <label asp-for="Location" class="control-label">مكان انعاقد الدورة</label>
+                <input asp-for="Location" class="form-control"/>
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="اضافة" class="btn btn-primary mt-2" />
+                <label asp-for="StartDate" class="control-label"> تاريخ البداية</label>
+                <input asp-for="StartDate" class="form-control" type="date"/>
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompletionDate" class="control-label">تاريخ النهاية</label>
+                <input asp-for="CompletionDate" class="form-control" type="date"/>
+                <span asp-validation-for="CompletionDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="اضافة" class="btn btn-primary mt-2"/>
             </div>
         </form>
     </div>
@@ -39,5 +46,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
